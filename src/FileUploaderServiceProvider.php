@@ -27,7 +27,7 @@ class FileUploaderServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'config/service_configuration.php','service_configuration');
         $this->publishes([
             __DIR__.'/views' => base_path('resources/views'),
-            __DIR__.'config/service_configuration.php' => config_path('service_configuration'),
+            __DIR__.'/config/service_configuration.php' => config_path('service_configuration'),
         ]);
         $this->publishes([
             __DIR__.'/public/manager' => public_path(),
