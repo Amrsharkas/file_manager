@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\Src\Http\Controllers;
+namespace Ie\FileManager\Http\Controllers;
 
 use App\Services\Archiver\Adapters\CustomZipArchive;
 use App\Services\Archiver\Adapters\ZipArchiver;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http;
+namespace Ie\FileManager\Http;
 
 use App\Http\Middleware\setRootPath;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;

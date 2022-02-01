@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\Src\Http\Controllers;
+namespace Ie\FileManager\ttp\Controllers;
 
 use App\Http\Requests\CreateNewRequest;
 use App\Http\Requests\RenameRequest;

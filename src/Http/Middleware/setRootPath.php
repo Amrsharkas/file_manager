@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\Src\Http\Middleware;
+namespace Ie\FileManager\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
