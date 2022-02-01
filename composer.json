@@ -27,7 +27,7 @@
     "extra": {
         "laravel": {
             "providers" : [
-                "Ie\\Src\\FileUploaderServiceProvider"
+                "Ie\\FileManager\\FileUploaderServiceProvider"
             ]
         }
     }
