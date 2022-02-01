@@ -1,5 +1,5 @@
 {
-    "name": "ie/src",
+    "name": "ie/fm",
     "autoload": {
         "psr-4": {
             "Ie\\FileManager\\": "src"
