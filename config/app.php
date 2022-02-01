@@ -1,6 +1,5 @@
 <?php
 
-use Ie\Src\FileUploaderServiceProvider;
 
 return [
 
@@ -176,7 +175,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        FileUploaderServiceProvider::class
+        \Ie\FileManager\FileUploaderServiceProvider::class
 
     ],
 
