@@ -119,10 +119,10 @@ ul .dropdown-menu-right li > a:hover {
     font-family: "premium-line-icons";
     src: url("./fonts/premium-line-icons.eot");
     src: url("./fonts/premium-line-icons.eot") format("embedded-opentype"),
-        url("./fonts/premium-line-icons.ttf") format("truetype"),
-        url("./fonts/premium-line-icons.woff") format("woff"),
-        url("fonts/premium-line-icons.svg?k9mp21#premium-line-icons")
-            format("svg");
+    url("./fonts/premium-line-icons.ttf") format("truetype"),
+    url("./fonts/premium-line-icons.woff") format("woff"),
+    url("fonts/premium-line-icons.svg?k9mp21#premium-line-icons")
+    format("svg");
     font-weight: normal;
     font-style: normal;
 }
@@ -174,7 +174,12 @@ ul .dropdown-menu-right li > a:hover {
 .text-reader {
     max-height: 80vh;
     overflow-y: auto;
-    width: 600px;
+    width: 740px;
+}
+.pdf-reader {
+    max-height: 160vh;
+    overflow-y: auto;
+    width: 740px;
 }
 .text-reader .line-numbers {
     max-height: 80%;

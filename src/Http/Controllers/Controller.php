@@ -2,7 +2,7 @@
 
 namespace Ie\FileManager\Http\Controllers;
 
-use App\Traits\RenderView;
+use Ie\FileManager\App\Traits\RenderView;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;

@@ -34,7 +34,7 @@
 
         </div>
     </div>
-    <input hidden id="path_to_upload" value="{{$mainPath}}">
+    <input id="path_to_upload" hidden name="path_to_upload" value="{{$mainPath}}">
     <ul id="demo-mail-list" class="file-list file-manager-container-grids">
         @foreach($contents as $content)
         <li  draggable="true" class="qu_grand_parent" data-path="{{$content['path']}}" data-type="{{$content['type']}}" data-name="@if($content['type']=='dir') {{$content['filename']}} @elseif($content['type']=='file'){{array_key_exists('extension',$content)?$content['filename'].".".$content['extension']:''}}@endif">
@@ -84,6 +84,15 @@
                    @endif  data-path="{{$content['path']}}"
                    class="file-details @if($content['type']=='dir' || $content['type']=='back')qu_folder @elseif($content['type']=='file')qu_file @endif">
                     <div class="media-block">
+                        @if(array_key_exists('extension',$content)&&in_array($content['extension'],[
+'jpg', 'jpeg' , 'jpe' , 'jif' , 'jfif' ,
+'jfi','img' ,'png' ,'gif'   ,'webp'  ,'tiff'
+,'tif'  ,'heif' ,
+'heic'   ,'ind' , 'indd' ,'indt',
+'svg', 'svgz'
+]))
+                            <img hidden class="preview_img_lazy" style="width:570px" id="editor" @if($disk=='s3') src="https://{{env('AWS_BUCKET')}}.s3.{{env('AWS_REGION')}}.amazonaws.com/{{$content['path']}}" @else src="{{$content['path']}}" @endif>
+                        @endif
                         <div class="media-left"><i class="@if($content['type']=='dir' || $content['type']=='back') demo-psi-folder
 @elseif($content['type']=='file')
                             @if(array_key_exists('extension',$content))
@@ -109,7 +118,7 @@
                             @endif
                             @endif
                         "></i>
-                    </div>
+                        </div>
                     <div class="media-body">
                         <p class="file-name">{{$content['filename']}}
 {{--                            {{array_key_exists('extension',$content)?'.'.$content['extension']:''}}--}}
@@ -122,142 +131,57 @@
         @endforeach
 
 
-        <!--File list item-->
-        {{-- <li>--}}
-        {{-- <div class="file-control">--}}
-        {{-- <input id="file-list-3" class="magic-checkbox" type="checkbox">--}}
-        {{-- <label for="file-list-3"></label>--}}
-        {{-- </div>--}}
-        {{-- <div class="file-settings"><a href="#"><i class="pci-ver-dots"></i></a></div>--}}
-        {{-- <div class="file-attach-icon"></div>--}}
-        {{-- <a href="#" class="file-details">--}}
-        {{-- <div class="media-block">--}}
-        {{-- <div class="media-left"><i class="demo-psi-folder-zip text-success"></i></div>--}}
-        {{-- <div class="media-body">--}}
-        {{-- <p class="file-name">Package.zip</p>--}}
-        {{-- <small>Created 3 weeks ago | 125 MB</small>--}}
-        {{-- </div>--}}
-        {{-- </div>--}}
-        {{-- </a>--}}
-        {{-- </li>--}}
+        <!--File list item-->}
 
-
-        <!--File list item-->
-        {{-- <li>--}}
-        {{-- <div class="file-control">--}}
-        {{-- <input id="file-list-4" class="magic-checkbox" type="checkbox">--}}
-        {{-- <label for="file-list-4"></label>--}}
-        {{-- </div>--}}
-        {{-- <div class="file-settings"><a href="#"><i class="pci-ver-dots"></i></a></div>--}}
-        {{-- <div class="file-attach-icon"></div>--}}
-        {{-- <a href="#" class="file-details">--}}
-        {{-- <div class="media-block">--}}
-        {{-- <div class="media-left"><i class="demo-psi-fle-html text-info"></i></div>--}}
-        {{-- <div class="media-body">--}}
-        {{-- <p class="file-name">index.html</p>--}}
-        {{-- <small>Created 3 weeks ago | 265 KB</small>--}}
-        {{-- </div>--}}
-        {{-- </div>--}}
-        {{-- </a>--}}
-        {{-- </li>--}}
-
-        {{-- <!--File list item-->--}}
-        {{-- <li>--}}
-        {{-- <div class="file-control">--}}
-        {{-- <input id="file-list-5" class="magic-checkbox" type="checkbox">--}}
-        {{-- <label for="file-list-5"></label>--}}
-        {{-- </div>--}}
-        {{-- <div class="file-settings"><a href="#"><i class="pci-ver-dots"></i></a></div>--}}
-        {{-- <div class="file-attach-icon"></div>--}}
-        {{-- <a href="#" class="file-details">--}}
-        {{-- <div class="media-block">--}}
-        {{-- <div class="media-left"><i class="demo-pli-file-txt"></i></div>--}}
-        {{-- <div class="media-body">--}}
-        {{-- <p class="file-name">robots.txt</p>--}}
-        {{-- <small>Created 3 weeks ago | 17 KB</small>--}}
-        {{-- </div>--}}
-        {{-- </div>--}}
-        {{-- </a>--}}
-        {{-- </li>--}}
-
-
-        {{-- <!--File list item-->--}}
-        {{-- <li>--}}
-        {{-- <div class="file-control">--}}
-        {{-- <input id="file-list-6" class="magic-checkbox" type="checkbox">--}}
-        {{-- <label for="file-list-6"></label>--}}
-        {{-- </div>--}}
-        {{-- <div class="file-settings"><a href="#"><i class="pci-ver-dots"></i></a></div>--}}
-        {{-- <div class="file-attach-icon"></div>--}}
-        {{-- <a href="#" class="file-details">--}}
-        {{-- <div class="media-block">--}}
-        {{-- <div class="media-left"><i class="demo-pli-video"></i></div>--}}
-        {{-- <div class="media-body">--}}
-        {{-- <p class="file-name">Highland.mp4</p>--}}
-        {{-- <small>Created 3 weeks ago | 540 MB</small>--}}
-        {{-- </div>--}}
-        {{-- </div>--}}
-        {{-- </a>--}}
-        {{-- </li>--}}
-
-
-        {{-- <!--File list item-->--}}
-        {{-- <li>--}}
-        {{-- <div class="file-control">--}}
-        {{-- <input id="file-list-7" class="magic-checkbox" type="checkbox">--}}
-        {{-- <label for="file-list-7"></label>--}}
-        {{-- </div>--}}
-        {{-- <div class="file-settings"><a href="#"><i class="pci-ver-dots"></i></a></div>--}}
-        {{-- <div class="file-attach-icon"></div>--}}
-        {{-- <a href="#" class="file-details">--}}
-        {{-- <div class="media-block">--}}
-        {{-- <div class="media-left"><i class="demo-pli-file"></i></div>--}}
-        {{-- <div class="media-body">--}}
-        {{-- <p class="file-name">License</p>--}}
-        {{-- <small>Created 3 weeks ago | 2 KB</small>--}}
-        {{-- </div>--}}
-        {{-- </div>--}}
-        {{-- </a>--}}
-        {{-- </li>--}}
-
-
-        {{-- <!--File list item-->--}}
-        {{-- <li>--}}
-        {{-- <div class="file-control">--}}
-        {{-- <input id="file-list-8" class="magic-checkbox" type="checkbox">--}}
-        {{-- <label for="file-list-8"></label>--}}
-        {{-- </div>--}}
-        {{-- <div class="file-settings"><a href="#"><i class="pci-ver-dots"></i></a></div>--}}
-        {{-- <div class="file-attach-icon"></div>--}}
-        {{-- <a href="#" class="file-details">--}}
-        {{-- <div class="media-block">--}}
-        {{-- <div class="media-left"><i class="demo-pli-file-word"></i></div>--}}
-        {{-- <div class="media-body">--}}
-        {{-- <p class="file-name">Company Overview.doc</p>--}}
-        {{-- <small>Created 3 weeks ago | 2 KB</small>--}}
-        {{-- </div>--}}
-        {{-- </div>--}}
-        {{-- </a>--}}
-        {{-- </li>--}}
-
-
-        {{-- <!--File list item-->--}}
-        {{-- <li>--}}
-        {{-- <div class="file-control">--}}
-        {{-- <input id="file-list-9" class="magic-checkbox" type="checkbox">--}}
-        {{-- <label for="file-list-9"></label>--}}
-        {{-- </div>--}}
-        {{-- <div class="file-settings"><a href="#"><i class="pci-ver-dots"></i></a></div>--}}
-        {{-- <div class="file-attach-icon"></div>--}}
-        {{-- <a href="#" class="file-details">--}}
-        {{-- <div class="media-block">--}}
-        {{-- <div class="media-left"><i class="demo-pli-file-jpg"></i></div>--}}
-        {{-- <div class="media-body">--}}
-        {{-- <p class="file-name">Nature.jpg</p>--}}
-        {{-- <small>Created 3 weeks ago | 56 KB</small>--}}
-        {{-- </div>--}}
-        {{-- </div>--}}
-        {{-- </a>--}}
-        {{-- </li>--}}
     </ul>
+{{--    <script>--}}
+{{--        $(document).ready(function() {--}}
+{{--            setLocalStorage();--}}
+{{--            function setLocalStorage(){--}}
+{{--                localStorage.setItem('path_to_upload',$('#path_to_upload').attr('value'))--}}
+{{--            }--}}
+{{--            // initialize with defaults--}}
+{{--            //   $("#input-id").fileinput();--}}
+{{--            // with plugin options--}}
+{{--            let path_to_upload--}}
+{{--            $("#input-id").fileinput({--}}
+{{--                uploadUrl: '/file-upload',--}}
+{{--                uploadExtraData: {--}}
+{{--                    'path_to_upload': localStorage.getItem('path_to_upload')--}}
+
+{{--                },--}}
+{{--                uploadAsync: true,--}}
+{{--                enableResumableUpload: true,--}}
+{{--                overwriteInitial: false,--}}
+{{--                minFileCount: 1,--}}
+{{--                showBrowse: true,--}}
+{{--                showCaption: false,--}}
+{{--                showUpload: false,--}}
+{{--                showUploadStats: false,--}}
+{{--                browseOnZoneClick: true,--}}
+{{--                maxFileCount: 15,--}}
+{{--                maxFileSize: 6053641, //in kb--}}
+{{--                removeFromPreviewOnError: true,--}}
+{{--                initialPreviewAsData: true // identify if you are sending preview data only and not the markup--}}
+{{--            }).on("filebatchselected", function(event, files) {--}}
+{{--                //$("#input-id").fileinput("upload");--}}
+{{--                $('.file-preview').show();--}}
+{{--            })--}}
+{{--                .on("filechunkbeforesend", function(event, files) {--}}
+{{--                    path_to_upload=  localStorage.getItem('path_to_upload')--}}
+{{--                })--}}
+
+{{--                .on("filebatchuploadcomplete", function(event, files) {--}}
+{{--                    $('.file-preview').hide();--}}
+{{--                    $('.progress').hide();--}}
+{{--                })--}}
+{{--                .on("fileuploaded", function(event, files) {--}}
+{{--                    getDirectory(localStorage.getItem('path_to_upload'))});--}}
+{{--            $('.fileinput-remove').addClass('fa fa-close');--}}
+{{--            $('.fileinput-remove').remove();--}}
+{{--            $('.btn.btn-primary.btn-file').hide();--}}
+{{--            $('.file-preview').hide();--}}
+{{--        });--}}
+
+{{--    </script>--}}
 </div>

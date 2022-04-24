@@ -22,8 +22,8 @@ function buildTree() {
     ).on('close_node.jstree', function (e, data) {
         data.instance.set_icon(data.node, "demo-pli-folder icon-lg icon-xs");
     }).on('changed.jstree', function (e, data) {
-        $('#jstree').jstree(true).delete_node(data.node.children)
         getDirectory(data.node.data)
+        $('#jstree').jstree(true).delete_node(data.node.children)
         let children=getJsonForTree();
         children.map(function (item) {
             $('#jstree').jstree().create_node(data.node.id, item);
@@ -73,11 +73,13 @@ function getDirectory(path,cache=true) {
     {
         last_style='file-manager-container-grid'
     }
+    localStorage.setItem('path_to_upload',path)
+    $('#path_to_upload').attr('value',path)
     $.ajax({
         url: url,
         method: 'get',
         data: data,
-        async:false,
+        async :false,
         success: function (response) {
             if (container) {
                 $(container).html('');
@@ -113,7 +115,7 @@ $(document).ready(function () {
                 'mp4':'video','MOV':'video','WMV':'video','AVI':'video','AVCHD':'video','FLV':'video',
                 'F4V':'video', 'SWF':'video' ,'MKV':'video','WEBM':'video',
                 'pdf' : 'docs',
-                 'jpg':'img', 'jpeg'  : 'img', 'jpe'  : 'img', 'jif'  : 'img', 'jfif'  : 'img',
+                'jpg':'img', 'jpeg'  : 'img', 'jpe'  : 'img', 'jif'  : 'img', 'jfif'  : 'img',
                 'jfi':'img' ,'png'  : 'img','gif'   : 'img' ,'webp'  : 'img' ,'tiff' : 'img'
                 ,'tif'  : 'img' ,'heif'  : 'img',
                 'heic'  : 'img'  ,'ind'  : 'img', 'indd' : 'img' ,'indt' : 'img',
@@ -234,7 +236,6 @@ $(document).ready(function () {
     })
 
     $(document).on('click','#browseFile',function () {
-        console.log("sss")
         $('#input-id').trigger('click');
     })
 
@@ -266,6 +267,8 @@ $(document).ready(function () {
     $(document).on('click','.qu_folder',function () {
         console.log("sssss")
         let path =$(this).attr('data-path')
+        $('#path_to_upload').val(path)
+        localStorage.setItem("path_to_upload",path);
         getDirectory(path);
     });
 
@@ -358,9 +361,9 @@ $(document).ready(function () {
     $(document).on('click','.qu_check_all',function (e) {
         $('.qu_check_all').removeClass('qu_check_all_removed_one')
         let checked=$(this).is(":checked");
-            $('.qu_checkbox').each(function () {
-                    $(this).prop('checked',checked)
-            })
+        $('.qu_checkbox').each(function () {
+            $(this).prop('checked',checked)
+        })
     })
 
     $(document).on('click','.qu_checkbox',function (e) {
@@ -380,9 +383,9 @@ $(document).ready(function () {
             $('.qu_check_all').prop('checked',true)
             $('.qu_check_all').addClass('qu_check_all_removed_one')
         }
-         if ($('.qu_checkbox:checked').length==0){
-             $('.qu_check_all').removeClass('qu_check_all_removed_one')
-             $('.qu_check_all').prop('checked',false)
+        if ($('.qu_checkbox:checked').length==0){
+            $('.qu_check_all').removeClass('qu_check_all_removed_one')
+            $('.qu_check_all').prop('checked',false)
         }
     })
     // })
@@ -397,11 +400,11 @@ $(document).ready(function () {
         let url;
         if (operation=='Copy'){
             url='/post-copy-file';
-         //   showProgressbar('Copying...')
+            //   showProgressbar('Copying...')
         }
         if (operation=='Move'){
             url='/post-move-file';
-          //  showProgressbar('Moving...')
+            //  showProgressbar('Moving...')
         }
         let data = {'paths':from };
         console.log(url,data);
@@ -536,6 +539,9 @@ $(document).ready(function () {
         let path =$(this).attr('data-path')
         let name =$(this).attr('data-name')
         let data= [{"type": type, "path": path, "name": name }];
+        $('#downloader-container').show();
+        downloadProgressBar(1);
+        showProgressbar('Zipping...')
         downloadZip(data,'dir')
     });
     function downloadZip(data,type) {
@@ -608,27 +614,27 @@ $(document).ready(function () {
     })
 
     $(document).on('click','.qu_file',function () {
-            let type = $(this).attr('data-type');
-            let path = $(this).attr('data-path');
-            let extension = $(this).attr('data-extension');
-            let mimetype = getTypeOfExtension(extension)
+        let type = $(this).attr('data-type');
+        let path = $(this).attr('data-path');
+        let extension = $(this).attr('data-extension');
+        let mimetype = getTypeOfExtension(extension)
         console.log(mimetype)
-            $('.modal-footer').hide()
-            $('.qu_editor').html('')
-            if (mimetype == undefined) {
-                let url = '/preview-text'
-                let data = {'type': type, 'path': path, 'mimetype': mimetype}
-                $.ajax({
-                    url: url,
-                    method: 'get',
-                    data: data,
-                    success: function (response) {
-                        try{
-                            response = JSON.parse(response);
-                        }
+        $('.modal-footer').hide()
+        $('.qu_editor').html('')
+        if (mimetype == undefined) {
+            let url = '/preview-text'
+            let data = {'type': type, 'path': path, 'mimetype': mimetype}
+            $.ajax({
+                url: url,
+                method: 'get',
+                data: data,
+                success: function (response) {
+                    try{
+                        response = JSON.parse(response);
+                    }
                     catch (e) {
-                            $('.close').click();
-                            swal({
+                        $('.close').click();
+                        swal({
                             title: "Unsupported file type",
                             text: "file cannot be previewed",
                             type: "danger",
@@ -636,19 +642,19 @@ $(document).ready(function () {
                             confirmButtonClass: "btn-danger",
                             closeOnConfirm: false
                         });
-                        }
-                        $('#qu_title').html('Preview File')
-                        $('.qu_editor').html('')
-                        $('.modal-footer').show()
-                        $('#path_modal').attr('value', '')
-                        $('#path_contents').attr('value', '')
-                        $('#path_modal').val(response.path)
-                        $('.qu_editor').removeClass("image-reader")
-                        $('.qu_editor').addClass("text-reader")
-                        $('#path_contents').val(response.contents)
-                        //$('.editor.code_editor').html(response.contents)
-                        $('.qu_editor').append(
-                            `
+                    }
+                    $('#qu_title').html('Preview File')
+                    $('.qu_editor').html('')
+                    $('.modal-footer').show()
+                    $('#path_modal').attr('value', '')
+                    $('#path_contents').attr('value', '')
+                    $('#path_modal').val(response.path)
+                    $('.qu_editor').removeClass("image-reader")
+                    $('.qu_editor').addClass("text-reader")
+                    $('#path_contents').val(response.contents)
+                    //$('.editor.code_editor').html(response.contents)
+                    $('.qu_editor').append(
+                        `
 <pre class="line-numbers"   onPaste="setTimeout(function() {onPaste();}, 0)"
   id="contents"
   contenteditable>
@@ -658,57 +664,65 @@ $(document).ready(function () {
   </pre>
 
 `);
+                }
+            });
+            $('.qu_modal_text').click();
+        }
+        else if (mimetype=='img'){
+            let src =$(this).find('.preview_img_lazy').attr('src')
+            $('#qu_title').html('Preview image')
+            $('.qu_editor').removeClass("text-reader")
+            $('.qu_editor').addClass("image-reader")
+            $('.qu_editor').append(`<img style="width:570px" id="editor" src="${src}"/>`);
+        }
+        else {
+            let url = '/preview-media'
+            let data = {'path': path}
+            $.ajax({
+                url: url,
+                method: 'get',
+                data: data,
+                success: function (link) {
+                    let download_url;
+                    if (isValidHttpUrl(link)) {
+                        download_url = link;
+                    } else {
+                        download_url = `/preview-media?path=${path}`
                     }
-                });
-                $('.qu_modal_text').click();
-            } else {
-                let url = '/preview-media'
-                let data = {'path': path}
-                $.ajax({
-                    url: url,
-                    method: 'get',
-                    data: data,
-                    success: function (link) {
-                        let download_url;
-                        if (isValidHttpUrl(link)) {
-                            download_url = link;
-                        } else {
-                            download_url = `/preview-media?path=${path}`
-                        }
-                        $('.qu_editor').html('')
-                        if (mimetype == 'img') {
-                            $('#qu_title').html('Preview image')
-                            $('.qu_editor').removeClass("text-reader")
-                            $('.qu_editor').addClass("image-reader")
-                            $('.qu_editor').append(`<img style="width:570px" id="editor" src="${download_url}"/>`);
-                        } else if (mimetype == 'audio') {
-                            $('#qu_title').html('Play audio')
-                            $('.qu_editor').removeClass("image-reader")
-                            $('.qu_editor').append(
-                                `<audio style="width:550px" id="player" controls>\n' +
+                    $('.qu_editor').html('')
+                    if (mimetype == 'audio') {
+                        $('#qu_title').html('Play audio')
+                        $('.qu_editor').removeClass("image-reader")
+                        $('.qu_editor').removeClass("pdf-reader")
+                        $('.qu_editor').append(
+                            `<audio style="width:550px" id="player" controls>\n' +
                             '  <source src=${download_url} />\n' +
                             '' +
                             '  </audio>`);
-                            plyr.setup("#player");
-                        } else if (mimetype == 'video') {
-                            $('#qu_title').html('Play video')
-                            $('.qu_editor').removeClass("text-reader")
-                            $('.qu_editor').addClass("image-reader")
-                            $('.qu_editor').append(` <video id="plyr-video">\n' +
+                        plyr.setup("#player");
+                    } else if (mimetype == 'video') {
+                        $('#qu_title').html('Play video')
+                        $('.qu_editor').removeClass("text-reader")
+                        $('.qu_editor').removeClass("pdf-reader")
+                        $('.qu_editor').addClass("image-reader")
+                        $('.qu_editor').append(` <video id="plyr-video">\n' +
                             '                        <source src="${download_url}" >\n' +
                             '                    </video>`);
-                            plyr.setup("#plyr-video");
-                        } else if (mimetype == 'docs') {
-                            console.log(download_url);
-                            $('#qu_title').html('Preview  PDF')
-                            $('.qu_editor').append(`<iframe width=700px allowfullscreen src="${download_url}">
+                        plyr.setup("#plyr-video");
+                    } else if (mimetype == 'docs') {
+                        console.log(download_url);
+                        $('#qu_title').html('Preview  PDF')
+                        $('.qu_editor').addClass("pdf-reader")
+                        $('.qu_editor').removeClass("image-reader")
+                        $('.qu_editor').removeClass("text-reader")
+                        $('.qu_editor').append(`<iframe width=700px allowfullscreen src="${download_url}">
                     </iframe>`);
-                            // plyr.setup("#plyr-video");
-                        }
+                        // plyr.setup("#plyr-video");
                     }
-                });
-            }
-                $('.open_modal').click();
+                }
+            });
+        }
+        $('.open_modal').click();
     });
     function onPaste() {
         const editable = document.getElementById("editable");
@@ -735,8 +749,8 @@ $(document).ready(function () {
         return url.protocol === "http:" || url.protocol === "https:";
     }
     var bar;
-  function  preperePrgressBar(){
-      bar = new ProgressBar.Circle(downloader, {
+    function  preperePrgressBar(){
+        bar = new ProgressBar.Circle(downloader, {
             color: '#aaa',
             strokeWidth: 4,
             trailWidth: 1,
@@ -788,7 +802,7 @@ $(document).ready(function () {
             let data = {'paths':from };
             let from_path=JSON.parse(from)[0].from_path;
             console.log(from_path)
-           moveFile('/post-move-file',data,$(this).attr('data-path'));
+            moveFile('/post-move-file',data,$(this).attr('data-path'));
         }
         else{
             alert('cant move into file')
@@ -797,7 +811,10 @@ $(document).ready(function () {
 
     window.Echo.channel('laravel_database_rss')
         .listen('SendMessage', (data) => {
-            console.log(data.msg)
             downloadProgressBar(data.msg)
         });
 });
+
+$(document).on('click','#close_modal',function (ev) {
+    $('.qu_editor ').html('')
+})

@@ -1,14 +1,19 @@
 $(document).ready(function() {
+    setLocalStorage();
+
+    function setLocalStorage(){
+        localStorage.setItem('path_to_upload',$('#path_to_upload').attr('value'))
+    }
     // initialize with defaults
     //   $("#input-id").fileinput();
     // with plugin options
-   let path_to_upload= $('#path_to_upload').attr('value')
+    let path_to_upload
     $("#input-id").fileinput({
         uploadUrl: '/file-upload',
-        uploadExtraData: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            'path_to_upload': path_to_upload,
-
+        uploadExtraData:  function() {
+            let out ={}
+            out['path_to_upload']= localStorage.getItem('path_to_upload')
+            return  out
         },
         uploadAsync: true,
         enableResumableUpload: true,
@@ -27,12 +32,18 @@ $(document).ready(function() {
         $("#input-id").fileinput("upload");
         $('.file-preview').show();
     })
+        .on("filechunkbeforesend", function(event, files) {
+          path_to_upload=  localStorage.getItem('path_to_upload')
+        })
+
 .on("filebatchuploadcomplete", function(event, files) {
     $('.file-preview').hide();
     $('.progress').hide();
     })
 .on("fileuploaded", function(event, files) {
-    getDirectory(path_to_upload)});
+    console.log(files)
+    console.log(event)
+    getDirectory(localStorage.getItem('path_to_upload'))});
     $('.fileinput-remove').addClass('fa fa-close');
    $('.fileinput-remove').remove();
     $('.btn.btn-primary.btn-file').hide();

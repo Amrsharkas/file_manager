@@ -10,11 +10,11 @@
         <div id="downloader"></div>
     </div>
 </div>
-<script src="{{ url('/js/app.js')}}" type="text/javascript"></script>
-<script>
-    window.laravel_echo_port='{{env("LARAVEL_ECHO_PORT")}}';
-</script>
-<script src="//{{ Request::getHost() }}:{{env('LARAVEL_ECHO_PORT')}}/socket.io/socket.io.js"></script>
-<script src="{{ url('js/laravel-echo-setup.js') }}" type="text/javascript"></script>
-<script type="text/javascript">
-</script>
+{{--<script src="{{ url('/js/app.js')}}" type="text/javascript"></script>--}}
+{{--<script>--}}
+{{--    window.laravel_echo_port='{{env("LARAVEL_ECHO_PORT")}}';--}}
+{{--</script>--}}
+{{--<script src="//{{ Request::getHost() }}:{{env('LARAVEL_ECHO_PORT')}}/socket.io/socket.io.js"></script>--}}
+{{--<script src="{{ url('js/laravel-echo-setup.js') }}" type="text/javascript"></script>--}}
+{{--<script type="text/javascript">--}}
+{{--</script>--}}

@@ -2,7 +2,8 @@
 
 namespace Ie\FileManager\Http\Controllers;
 
-use App\Services\Storage\FileStructure;
+
+use Ie\FileManager\App\Services\Storage\FileStructure;
 use Illuminate\Http\Request;
 
 class FileManagerController extends Controller
@@ -12,6 +13,7 @@ class FileManagerController extends Controller
 
     public function __construct(FileStructure $fileSystem)
     {
+        
         $middlewares=config('service_configuration.middlewares');
         if (count($middlewares)>0){
             $this->middleware($middlewares);
@@ -31,7 +33,8 @@ class FileManagerController extends Controller
             $breadcrumbs=$this->fileSystem->buildBreadcrumbStructure($mainPath);
             $contents = $this->fileSystem->getDirectoryStructure($mainPath,false,$cache);
             $directoriesPerTree = json_encode($this->fileSystem->filterDirectoryStructure($contents,'dir'));
-            return $this->renderView(compact('contents','mainPath','breadcrumbs','directoriesPerTree','root'),'base','contents');
+            $disk=$this->fileSystem->getDisk();
+            return $this->renderView(compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk'),'fm.base','fm.contents');
         }
         return 'Insufficient permissions';
     }

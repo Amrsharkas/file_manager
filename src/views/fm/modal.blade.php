@@ -19,7 +19,7 @@
             <input hidden id="path_contents" name="contents">
             <div hidden class="modal-footer">
 
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="close_modal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary qu_write_file">Save changes</button>
             </div>
         </div>

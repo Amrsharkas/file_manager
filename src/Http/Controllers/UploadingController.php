@@ -1,17 +1,17 @@
 <?php
 
-namespace Ie\FileManager\ttp\Controllers;
+namespace Ie\FileManager\Http\Controllers;
 
-use App\Http\Requests\CreateNewRequest;
-use App\Http\Requests\RenameRequest;
-use App\Services\Storage\FileStructure;
+use Ie\FileManager\Http\Requests\CreateNewRequest;
+use Ie\FileManager\Http\Requests\RenameRequest;
+use Ie\FileManager\App\Services\Storage\FileStructure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 
-class UploadController extends Controller
+class UploadingController extends Controller
 {
 
     private $fileSystem;
@@ -34,7 +34,7 @@ class UploadController extends Controller
         $oldName=$request->input('old_name');
         $path=$request->input('path');
         $type=$request->input('type');
-        return view('rename',compact('oldName','type','path'));
+        return view('fm.rename',compact('oldName','type','path'));
 //        return  $this->fileSystem->rename($path,$oldName,$newName);
 
     }
@@ -59,7 +59,7 @@ class UploadController extends Controller
         $file_name=$request->input('filename');
         $operator=$request->input('operator');
         $tree=$this->fileSystem->getTreeStructure('p_test',true,'dir');
-        return view('tree',compact('tree','type','from','file_name','operator'));
+        return view('fm.tree',compact('tree','type','from','file_name','operator'));
 
     }
 
@@ -102,7 +102,7 @@ class UploadController extends Controller
     {
         $path=$request->input('path');
         $type=$request->input('type');
-        return view('create',compact('type','path'));
+        return view('fm.create',compact('type','path'));
 
     }
 

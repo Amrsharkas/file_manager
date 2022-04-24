@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\FileManager\Console;
+namespace Ie\FileManager\App\Console;
 
 use Illuminate\Console\Command;
 
@@ -17,7 +17,7 @@ class InstallFm extends Command
         $this->info('Publishing FileManager...');
 
         $this->call('vendor:publish', [
-            '--provider' => "Ie\FileManager\FileUploaderServiceProvider",
+            '--provider' => "Ie\FileManager\App\FileUploaderServiceProvider",
             '--tag' => "config"
         ]);
 

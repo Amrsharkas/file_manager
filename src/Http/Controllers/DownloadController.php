@@ -2,16 +2,16 @@
 
 namespace Ie\FileManager\Http\Controllers;
 
-use App\Services\Archiver\Adapters\CustomZipArchive;
-use App\Services\Archiver\Adapters\ZipArchiver;
-use App\Services\Archiver\ArchiverInterface;
-use App\Services\Download\StrategyAWS;
-use App\Services\Download\StrategyDefault;
-use App\Services\Download\StrategyDownloadContext;
-use App\Services\Download\StrategyLocal;
-use App\Services\Storage\FileStructure;
-use App\Services\Tmpfs\Adapters\Tmpfs;
-use App\Services\Tmpfs\TmpfsInterface;
+use Ie\FileManager\App\Services\Archiver\Adapters\CustomZipArchive;
+use Ie\FileManager\App\Services\Archiver\Adapters\ZipArchiver;
+use Ie\FileManager\App\Services\Archiver\ArchiverInterface;
+use Ie\FileManager\App\Services\Download\StrategyAWS;
+use Ie\FileManager\App\Services\Download\StrategyDefault;
+use Ie\FileManager\App\Services\Download\StrategyDownloadContext;
+use Ie\FileManager\App\Services\Download\StrategyLocal;
+use Ie\FileManager\App\Services\Storage\FileStructure;
+use Ie\FileManager\App\Services\Tmpfs\Adapters\Tmpfs;
+use Ie\FileManager\App\Services\Tmpfs\TmpfsInterface;
 use Aws\Sdk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -30,6 +30,7 @@ class DownloadController extends Controller
     private $fileSystem;
     private $storage;
     private $strategyDownloadContext;
+    private $tmpfs;
     /**
      * @var Tmpfs
      */
@@ -37,11 +38,13 @@ class DownloadController extends Controller
 
     public function __construct(FileStructure $fileSystem,
                                 StrategyDownloadContext $strategyDownloadContext,
-                                ZipArchiver $archiver)
+                                ZipArchiver $archiver,Tmpfs $tmpfs
+    )
     {
        $this->archiver=$archiver;
        $this->fileSystem=$fileSystem;
        $this->strategyDownloadContext=$strategyDownloadContext;
+       $this->tmpfs=$tmpfs;
 //       $this->tmpfs=$tmpfs;
     }
 
@@ -59,16 +62,17 @@ class DownloadController extends Controller
             if ($this->fileSystem->getAdapterInstance() instanceof AwsS3Adapter) {
                 $this->strategyDownloadContext->setStrategy(new StrategyAWS());
                 $this->strategyDownloadContext->createUUid();
-                $this->strategyDownloadContext->download($paths,$this->archiver,$this->fileSystem);
                 $current= $this->strategyDownloadContext->getUUid();
-                $this->strategyDownloadContext->setExpirationForFile($current,public_path().'/');
+                $this->strategyDownloadContext->download($current,$paths,$this->archiver,$this->fileSystem);
+                $this->tmpfs->setExpirationForFile($current,public_path().'/');
                 return 'temp_downloads/'.$current.'.zip';
             }
             else{
                 $this->strategyDownloadContext->setStrategy(new StrategyDefault());
-                $this->strategyDownloadContext->download($paths,$this->archiver,$this->fileSystem);
+                $this->strategyDownloadContext->createUUid();
                 $current= $this->strategyDownloadContext->getUUid();
-                $this->strategyDownloadContext->setExpirationForFile($current.'zip',public_path().'/');
+                $this->strategyDownloadContext->download($current,$paths,$this->archiver,$this->fileSystem);
+                $this->tmpfs->setExpirationForFile($current.'zip',public_path().'/');
                 return 'temp_downloads/'.$current;
             }
 //            return $this->downloadAsCompressed($paths);
@@ -168,7 +172,7 @@ class DownloadController extends Controller
 //                $zip->addFile($filePath,$relativePath);
 //                $downloaded+=$file->getSize();
 //                dump($downloaded);
-//                event(new \App\Events\SendMessage((int)(($downloaded/$fullSize) * 100)));
+//                event(new \Ie\FileManager\App\Events\SendMessage((int)(($downloaded/$fullSize) * 100)));
 //            }
 //        }
 //        event(new \App\Events\SendMessage(100));

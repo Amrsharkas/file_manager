@@ -1,0 +1,29 @@
+<?php
+
+namespace Ie\FileManager\App\Services\Download;
+
+class StrategyDefault
+{
+
+    public function download($current,$paths,$archiver,$fileSystem){
+        $uniqid =   $archiver->createArchive($current,$fileSystem);
+        foreach ($paths as $item) {
+            $item=(object)$item;
+            if ($item->type == 'dir') {
+                $archiver->addDirectoryFromStorage($item->path);
+            }
+            if ($item->type == 'file') {
+                $archiver->addFileFromStorage($item->path);
+            }
+        }
+        $archiver->closeArchive();
+        return  $uniqid;
+    }
+
+
+
+    public function compress(){
+
+    }
+
+}

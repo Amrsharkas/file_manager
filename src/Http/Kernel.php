@@ -2,7 +2,7 @@
 
 namespace Ie\FileManager\Http;
 
-use App\Http\Middleware\setRootPath;
+use Ie\FileManager\Http\Middleware\setRootPath;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

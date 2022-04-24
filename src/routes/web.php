@@ -14,27 +14,27 @@
 Route::get('/', function () {
 });
 
-Route::get('/get-dir', 'App\Http\Controllers\FileManagerController@getDirectory');
-Route::get('/get-tree', 'App\Http\Controllers\FileManagerController@getTree');
-Route::get('/get-js-tree', 'App\Http\Controllers\FileManagerController@getDirectoriesForTree');
+Route::get('/get-dir', 'Ie\FileManager\Http\Controllers\FileManagerController@getDirectory');
+Route::get('/get-tree', 'Ie\FileManager\Http\Controllers\FileManagerController@getTree');
+Route::get('/get-js-tree', 'Ie\FileManager\Http\Controllers\FileManagerController@getDirectoriesForTree');
 //ViewController
-Route::get('/preview-text', 'App\Http\Controllers\ViewController@previewFileAsText');
-Route::get('/preview-media', 'App\Http\Controllers\ViewController@previewFileAsMedia');
+Route::get('/preview-text', 'Ie\FileManager\Http\Controllers\ViewController@previewFileAsText');
+Route::get('/preview-media', 'Ie\FileManager\Http\Controllers\ViewController@previewFileAsMedia');
 
-Route::post('/file-upload', 'App\Http\Controllers\UploadController@uploadFilesByChunks')->name('files.upload.large');
-Route::get('/rename-file', 'App\Http\Controllers\UploadController@renameFileView');
-Route::post('/post-rename-file', 'App\Http\Controllers\UploadController@rename');
-Route::get('/remove', 'App\Http\Controllers\UploadController@remove');
-Route::get('/move', 'App\Http\Controllers\UploadController@moveView');
-Route::get('/copy', 'App\Http\Controllers\UploadController@moveView');
-Route::post('/post-move-file', 'App\Http\Controllers\UploadController@move');
-Route::post('/post-copy-file', 'App\Http\Controllers\UploadController@copy');
+Route::post('/file-upload', 'Ie\FileManager\Http\Controllers\UploadingController@uploadFilesByChunks')->name('files.upload.large');
+Route::get('/rename-file', 'Ie\FileManager\Http\Controllers\UploadingController@renameFileView');
+Route::post('/post-rename-file', 'Ie\FileManager\Http\Controllers\UploadingController@rename');
+Route::get('/remove', 'Ie\FileManager\Http\Controllers\UploadingController@remove');
+Route::get('/move', 'Ie\FileManager\Http\Controllers\UploadingController@moveView');
+Route::get('/copy', 'Ie\FileManager\Http\Controllers\UploadingController@moveView');
+Route::post('/post-move-file', 'Ie\FileManager\Http\Controllers\UploadingController@move');
+Route::post('/post-copy-file', 'Ie\FileManager\Http\Controllers\UploadingController@copy');
 
-Route::get('/create-new', 'App\Http\Controllers\UploadController@createNewView');
-Route::post('/post-create-file', 'App\Http\Controllers\UploadController@createNew');
+Route::get('/create-new', 'Ie\FileManager\Http\Controllers\UploadingController@createNewView');
+Route::post('/post-create-file', 'Ie\FileManager\Http\Controllers\UploadingController@createNew');
 
-Route::get('/download-single', 'App\Http\Controllers\DownloadController@downloadSingle');
-Route::post('/write-file', 'App\Http\Controllers\UploadController@writeFile');
+Route::get('/download-single', 'Ie\FileManager\Http\Controllers\DownloadController@downloadSingle');
+Route::post('/write-file', 'Ie\FileManager\Http\Controllers\UploadingController@writeFile');
 
-Route::get('/get-compressed-link', 'App\Http\Controllers\DownloadController@getDownloadCompressedLink');
+Route::get('/get-compressed-link', 'Ie\FileManager\Http\Controllers\DownloadController@getDownloadCompressedLink');
 

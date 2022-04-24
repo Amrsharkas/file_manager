@@ -15,10 +15,10 @@
     <link href="{{asset('manager/css/demo/nifty-demo.min.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     <link rel="stylesheet" href="https://cdn.plyr.io/2.0.15/plyr.css">
-    <link href="{{asset('manager/contents.css')}}" rel="stylesheet">
+    <link href="{{asset('manager/test2.css')}}" rel="stylesheet">
     <script src="{{asset('manager/plugins/pace/pace.min.js')}}"></script>
     <script src="{{asset('manager/js/jquery.min.js')}}"></script>
-    <script src="{{asset('manager/progressbar.js')}}"></script>
+    <script src="{{asset('manager/js/progressbar.js')}}"></script>
     <script src="{{asset('manager/js/bootstrap.min.js')}}"></script>
     <script src="{{asset('manager/js/nifty.min.js')}}"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -41,7 +41,7 @@
 
 </head>
 
-@include('modal')
+@include('fm.modal')
 <!--Dropdowns Addons-->
 <!--===================================================-->
 <!--===================================================-->
@@ -71,12 +71,12 @@
                         <button hidden disabled id="past_button" value="" >Paste </button>
                         <input hidden id="from_input" value="" />
                         <input  hidden id="myhome" value="{{$root}}" />
-                        @include('contents')
+                        @include('fm.contents')
                         <div  style="width: 1000px">
                             <input  id="input-id" name="file" type="file" multiple>
                         </div>
                     </div>
-                    @include('download')
+                    @include('fm.download')
                 </div>
             </div>
         </div>
