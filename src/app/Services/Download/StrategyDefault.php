@@ -2,7 +2,7 @@
 
 namespace Ie\FileManager\App\Services\Download;
 
-class StrategyDefault
+class StrategyDefault extends  CommonBrodcast
 {
 
     public function download($current,$paths,$archiver,$fileSystem){

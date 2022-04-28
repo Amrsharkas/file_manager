@@ -2,6 +2,8 @@
 
 namespace Ie\FileManager\App\Services\FilePermission;
 
+use App\PmModels\FileManager;
+use App\PmModels\Project;
 use Ie\FileManager\App\Services\Cache\Adapters\CacheSystem;
 use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\Collection;
@@ -15,7 +17,9 @@ class FilePermissionPartner implements IFilePermissionPartner
     /**
      * @var CacheSystem
      */
-    private $cache;
+    protected $cache;
+
+    protected $availablity;
     /**
      * @var mixed
      */
@@ -24,6 +28,10 @@ class FilePermissionPartner implements IFilePermissionPartner
      * @var CacheSystem
      */
     private $cacheTimeout;
+
+    private $user;
+    
+    protected $file_permissions;
 
     public function __construct(CacheSystem $cache)
     {
@@ -37,7 +45,32 @@ class FilePermissionPartner implements IFilePermissionPartner
 
     public function getUserID() : ?int
     {
-        return Auth::id();
+        return $this->user->id;
+    }
+
+    public function getAvailablity() : ?int
+    {
+        return $this->availablity;
+    }
+
+    public function setAvailablity($availablity)
+    {
+         $this->availablity=$availablity;
+    }
+
+    public function getcacheUsed() : ?int
+    {
+        return $this->cacheUsed;
+    }
+
+    public function getcacheTimeout() : ?int
+    {
+        return $this->cacheTimeout;
+    }
+
+    public function setUser($user)
+    {
+         $this->user =$user;
     }
 
 
@@ -45,22 +78,37 @@ class FilePermissionPartner implements IFilePermissionPartner
     {
         return config('service_configuration.disk');
     }
+    
+    public function setFileManagerPermissions($file_permissions){
+        $this->file_permissions=$file_permissions;
+    }
+
+    public function getFileManagerPermissions(){
+       return $this->file_permissions;
+    }
 
 
-    public function getPermissions($path)
+    public function getPermissions($path,$search_path='parent',$first=false)
     {
         $config = config('service_configuration');
-        $user=$this->getUserID();
-        $disk=$this->getUsedDisk();
-         if ($config['denyAll'] == true) {
+         if ($this->getAvailablity()) {
+             $this->setUser(Auth::user());
+             $user=$this->getUserID();
+             $disk=$this->getUsedDisk();
              // you can return array that want
              $dataMapper = new FilePermissionPartnerMapper();
              if (!$this->cacheUsed){
-                 return  $dataMapper->fetchPermissions([
+                 $result=$dataMapper->fetchPermissions([
                      'user_id'=>$user,
                      'disk'=>$disk,
-                     'parent'=>$path
+                     $search_path=>$path
                  ]);
+                 if(!$first){
+                     return $result;
+                 }
+                 else{
+                     return  reset($result);
+                 }
              }
              else{
                  //$this->cache->flushAllInCacheServer();
@@ -69,13 +117,18 @@ class FilePermissionPartner implements IFilePermissionPartner
                      return  $this->cache->fetchFromCacheServer($key);
                  }
                  else{
-                     $permissions=  $dataMapper->fetchPermissions([
+                     $permissions=$dataMapper->fetchPermissions([
                          'user_id'=>$user,
                          'disk'=>$disk,
-                         'parent'=>$path
+                         $search_path=>$path
                      ]);
                      $this->cache->storeToCacheServer($key,$permissions,$this->cacheTimeout);
-                     return $permissions;
+                     if($first!=1){
+                         return $permissions;
+                     }
+                     else{
+                         return   $permissions->first();
+                     }
                  }
 
              }

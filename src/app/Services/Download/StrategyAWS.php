@@ -2,8 +2,9 @@
 
 namespace Ie\FileManager\App\Services\Download;
 
-class StrategyAWS
+class StrategyAWS extends  CommonBrodcast
 {
+    private $full_size;
     
     
     public function download($current,$paths,$archiver,$fileSystem){
@@ -25,6 +26,7 @@ class StrategyAWS
             }
 
         }
+        $this->full_size=$this->folderSize($path_server);
         $this->compress($path_server);
     }
 
@@ -40,6 +42,7 @@ class StrategyAWS
             new \RecursiveDirectoryIterator($rootPath),
             \RecursiveIteratorIterator::LEAVES_ONLY
         );
+        $result=0;
         foreach ($files as $name => $file)
         {
             if (!$file->isDir())
@@ -47,11 +50,15 @@ class StrategyAWS
                 // Get real and relative path for current file
                 $filePath = $file->getRealPath();
                 $relativePath = substr($filePath, strlen($rootPath) + 1);
-
+                $file_size=filesize($filePath);
+                $percentage = $file_size/$this->full_size * 100;
+                $result +=(int) $percentage;
+                $this->brodcastMessage(($result)/100);
                 $zip->addFile($filePath, $relativePath);
             }
         }
         $zip->close();
     }
+
 
 }

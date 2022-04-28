@@ -14,6 +14,7 @@
 Route::get('/', function () {
 });
 
+Route::group(['middleware' => 'web'], function () {
 Route::get('/get-dir', 'Ie\FileManager\Http\Controllers\FileManagerController@getDirectory');
 Route::get('/get-tree', 'Ie\FileManager\Http\Controllers\FileManagerController@getTree');
 Route::get('/get-js-tree', 'Ie\FileManager\Http\Controllers\FileManagerController@getDirectoriesForTree');
@@ -38,3 +39,4 @@ Route::post('/write-file', 'Ie\FileManager\Http\Controllers\UploadingController@
 
 Route::get('/get-compressed-link', 'Ie\FileManager\Http\Controllers\DownloadController@getDownloadCompressedLink');
 
+});

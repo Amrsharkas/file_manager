@@ -31,6 +31,18 @@ class Paste
      * @return mixed
      */
 
+    private $disk;
+
+    /**
+     * @return mixed
+     */
+
+    private $name;
+
+    /**
+     * @return mixed
+     */
+
 
     /**
      * Create a new event instance.
@@ -38,12 +50,14 @@ class Paste
      * @return void
      */
 
-    public function __construct($operation,$oldPath,$newPath,$type)
+    public function __construct($operation,$oldPath,$newPath,$name,$type,$disk)
     {
         $this->operation=$operation;
         $this->oldPath=$oldPath;
         $this->newPath=$newPath;
         $this->type=$type;
+        $this->disk=$disk;
+        $this->name=$name;
       //  dd($operation,$oldPath,$newPath,$type);
     }
 
@@ -74,5 +88,15 @@ class Paste
     public function getType()
     {
         return $this->type;
+    }
+
+    public function getDisk()
+    {
+        return $this->disk;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }

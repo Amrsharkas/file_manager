@@ -34,7 +34,7 @@ class Rename
      * @return void
      */
 
-    public function __construct($newName,$oldName,$path,$type,$disk)
+    public function __construct($oldName,$newName,$path,$type,$disk)
     {
         $this->newName=$newName;
         $this->oldName=$oldName;

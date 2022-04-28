@@ -73,23 +73,31 @@ function getDirectory(path,cache=true) {
     {
         last_style='file-manager-container-grid'
     }
-    localStorage.setItem('path_to_upload',path)
     $('#path_to_upload').attr('value',path)
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    let query_params='';
+    for (const property in params) {
+        if (property!='dir'){  // buildin package
+            query_params+=`&${property}=${params[property]}`;
+        }
+    }
+    url=url+'?dir='+path+query_params;
     $.ajax({
         url: url,
         method: 'get',
         data: data,
         async :false,
         success: function (response) {
-            if (container) {
-                $(container).html('');
-                $(container).html(response);
-                if (last_style!=undefined){
-                    $('#demo-mail-list').addClass(last_style)
+                if (container) {
+                    $(container).html('');
+                    $(container).html(response);
+                    if (last_style!=undefined){
+                        $('#demo-mail-list').addClass(last_style)
+                    }
+                    history.pushState(null, null, url+'?dir='+path+query_params);
                 }
-                history.pushState(null, null, url+'?dir='+path);
-            }
-            sortList()
+                sortList()
         },
 
     });
@@ -257,8 +265,26 @@ $(document).ready(function () {
             method: 'post',
             data: data,
             success: function (response) {
-                let path_to_upload=$('#path_to_upload').attr('value');
-                getDirectory(path_to_upload)
+                let success=1
+                if (response!=''){
+                    let  res=JSON.parse(response);
+                    if (res.hasOwnProperty('code') && res.code==403){
+                        success=0;
+                        $('.close').click();
+                        swal({
+                            title: "Uncompleted operation",
+                            text: "you cant do this action",
+                            type: "danger",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            closeOnConfirm: false
+                        });
+                    }
+                }
+                if (success==1){
+                    let path_to_upload=$('#path_to_upload').attr('value');
+                    getDirectory(path_to_upload)
+                }
             },
         });
     });
@@ -267,8 +293,7 @@ $(document).ready(function () {
     $(document).on('click','.qu_folder',function () {
         console.log("sssss")
         let path =$(this).attr('data-path')
-        $('#path_to_upload').val(path)
-        localStorage.setItem("path_to_upload",path);
+        $('#path_to_upload').attr('value',path)
         getDirectory(path);
     });
 
@@ -288,8 +313,31 @@ $(document).ready(function () {
             method: 'get',
             data: {'paths' : data ,'main_path':path_to_upload },
             success: function (response) {
-                hideProgressbar();
-                getDirectory(path_to_upload);
+                let success=1
+                if (response!=''){
+                    let  res=JSON.parse(response);
+                    if (res.hasOwnProperty('code') && res.code==403){
+                        success=0;
+                        $('.close').click();
+                        swal({
+                            title: "Uncompleted operation",
+                            text: "you cant do this action",
+                            type: "danger",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            closeOnConfirm: false
+                        });
+                    }
+                }
+                if (success==1){
+                    hideProgressbar();
+                    swal(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
+                    getDirectory(path_to_upload);
+                }
             },
         });
     }
@@ -309,11 +357,11 @@ $(document).ready(function () {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then(function () {
-                swal(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                )
+                // swal(
+                //     'Deleted!',
+                //     'Your file has been deleted.',
+                //     'success'
+                // )
                 removeFiles(data)
             })
         }
@@ -486,7 +534,7 @@ $(document).ready(function () {
         if (data.length>0){
             console.log('ssss')
             $('#downloader-container').show();
-            downloadProgressBar(1);
+           downloadProgressBar(0.01);
             showProgressbar('Zipping...')
             downloadZip(data,'many')
         }
@@ -518,11 +566,11 @@ $(document).ready(function () {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then(function () {
-                swal(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                )
+                // swal(
+                //     'Deleted!',
+                //     'Your file has been deleted.',
+                //     'success'
+                // )
                 removeFiles(data)
             })
         }
@@ -540,7 +588,7 @@ $(document).ready(function () {
         let name =$(this).attr('data-name')
         let data= [{"type": type, "path": path, "name": name }];
         $('#downloader-container').show();
-        downloadProgressBar(1);
+       downloadProgressBar(0.01);
         showProgressbar('Zipping...')
         downloadZip(data,'dir')
     });
@@ -556,9 +604,11 @@ $(document).ready(function () {
                 // console.log(link);
                 setTimeout(function () {
                     $('#downloader-container').hide();
+                    $('#download_status').html('Downloading...')
+                    $('#inner_status').html('Downloading Files ...')
                 },3000)
                 console.log(link);
-                download('archive',link)
+                download('archive',link,true)
             },
         });
     }
@@ -567,36 +617,42 @@ $(document).ready(function () {
             downloadZip(data,'dir')
         }
         let url='/download-single';
-        $.ajax({
-            url: url,
-            method: 'get',
-            data: {'path':path ,'type' :type ,'name':name },
-            success: function (response) {
-                if (type=='file'){
-                    let download_url;
-                    if (isValidHttpUrl(response)){
-                        download_url=response;
-                    }
-                    else{
-                        download_url=`/preview-media?path=${path}`
-                    }
-                    console.log(download_url)
-                    download(name,download_url)
-                }
-            },
-        });
+        // console.log(path)
+        // console.log(type)
+        // console.log(name)
+        let download_url ='/download-single?path='+path+'&type='+type+'&name='+name;
+        download(name,download_url)
+        // $.ajax({
+        //     url: url,
+        //     method: 'get',
+        //     data: {'path':path ,'type' :type ,'name':name },
+        //     success: function (response) {
+        //         if (type=='file'){
+        //             let download_url ='/download-single?path='+path+'&type='+type+'&name='+name;
+        //             // if (isValidHttpUrl(response)){
+        //             //     download_url=response;
+        //             // }
+        //             // else{
+        //             //     download_url=`/preview-media?path=${path}`
+        //             // }
+        //            // console.log(download_url)
+        //             download(name,download_url)
+        //         }
+        //     },
+        // });
     }
 
-    function download(filename, link) {
+    function download(filename, link,new_tab=false) {
         var element = document.createElement('a');
         element.setAttribute('href', link);
-        element.setAttribute('download',filename);
-        element.setAttribute('target', '_blank');
-        element.innerHTML='sssssssss';
-        //element.style.display = 'none';
+        // element.setAttribute('download',filename);
+        if (new_tab==true){
+            element.setAttribute('target', '_blank');
+        }
+        element.style.display = 'none';
         document.body.appendChild(element);
         element.click();
-        //document.body.removeChild(element);
+        document.body.removeChild(element);
     }
 
     $(document).on('click','.qu_write_file',function () {
@@ -608,6 +664,18 @@ $(document).ready(function () {
             method: 'post',
             data: { _token:  $('meta[name="csrf-token"]').attr('content'), 'path': path , 'contents' : contents},
             success: function (response) {
+                let res= JSON.parse(response);
+                if (res.hasOwnProperty('code') && res.code==403){
+                    $('.close').click();
+                    swal({
+                        title: "Uncompleted operation",
+                        text: "you cant do this action",
+                        type: "danger",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-danger",
+                        closeOnConfirm: false
+                    });
+                }
             },
 
         });
@@ -783,7 +851,7 @@ $(document).ready(function () {
     preperePrgressBar();
 
     function downloadProgressBar(msg) {
-        bar.animate(msg/100);
+        bar.animate(msg);
     }
 
     $(document).on('dragstart','.qu_grand_parent',function (ev) {
@@ -809,10 +877,16 @@ $(document).ready(function () {
         }
     })
 
-    window.Echo.channel('laravel_database_rss')
-        .listen('SendMessage', (data) => {
-            downloadProgressBar(data.msg)
-        });
+    Pusher.logToConsole = false;
+    var pusher = new Pusher($('#real_brodcast').attr('value'), {
+        cluster: 'eu'
+    });
+    var channel = pusher.subscribe($('#real_brodcast').attr('data-channel'));
+    channel.bind('Ie\\FileManager\\App\\Events\\DownloadingStatusEvent', function(data) {
+        $('#download_status').html('Zipping')
+        $('#inner_status').html('Zipping Files ...')
+        downloadProgressBar(data);
+    });
 });
 
 $(document).on('click','#close_modal',function (ev) {

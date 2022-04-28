@@ -2,6 +2,7 @@
 
 namespace Ie\FileManager\Http\Controllers;
 
+use Ie\FileManager\App\Events\DownloadingStatusEvent;
 use Ie\FileManager\App\Services\Archiver\Adapters\CustomZipArchive;
 use Ie\FileManager\App\Services\Archiver\Adapters\ZipArchiver;
 use Ie\FileManager\App\Services\Archiver\ArchiverInterface;
@@ -14,9 +15,11 @@ use Ie\FileManager\App\Services\Tmpfs\Adapters\Tmpfs;
 use Ie\FileManager\App\Services\Tmpfs\TmpfsInterface;
 use Aws\Sdk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -75,21 +78,6 @@ class DownloadController extends Controller
                 $this->tmpfs->setExpirationForFile($current.'zip',public_path().'/');
                 return 'temp_downloads/'.$current;
             }
-//            return $this->downloadAsCompressed($paths);
-
-          //  shell_exec('chmod 777 -R  '.public_path('temp_downloads'));
-//            $paths=$data['paths'];
-//            $uniqid = $this->archiver->createArchive($this->fileSystem);
-//            foreach ($paths as $item) {
-//                $item=(object)$item;
-//                if ($item->type == 'dir') {
-//                    $this->archiver->addDirectoryFromStorage($item->path);
-//                }
-//                if ($item->type == 'file') {
-//                  $this->archiver->addFileFromStorage($item->path);
-//                }
-//            }
-//            $this->archiver->closeArchive();
         }
     }
 
@@ -205,24 +193,6 @@ class DownloadController extends Controller
 //        $command_to_remove_dir='rm -rf  '.$final_file;
 //        exec($zip_command.' && '.$command_to_remove_dir);
      return  'temp_downloads/'.$current.'.zip';
-    }
-
-    function folderSize($dir){
-        $total_size = 0;
-        $count = 0;
-        $dir_array = scandir($dir);
-        foreach($dir_array as $key=>$filename){
-            if($filename!=".." && $filename!="."){
-                if(is_dir($dir."/".$filename)){
-                    $new_foldersize = $this->foldersize($dir."/".$filename);
-                    $total_size = $total_size+ $new_foldersize;
-                }else if(is_file($dir."/".$filename)){
-                    $total_size = $total_size + filesize($dir."/".$filename);
-                    $count++;
-                }
-            }
-        }
-        return $total_size;
     }
 
 

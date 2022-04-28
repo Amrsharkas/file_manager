@@ -13,10 +13,6 @@ class CacheSystem implements CacheServerInterface{
 
     public function connectToCacheServer($config)
     {
-//        $redisInstance= new \Redis();
-//        $redisInstance->connect($config['config']['host'], $config['config']['port']);
-//        $this->redis=$redisInstance;
-//        return $this;
 
     }
 

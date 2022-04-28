@@ -35,5 +35,16 @@ class FileUploaderServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'\database/migrations/2022_01_13_134811_create_file_permission_user_table.php' =>base_path('database/migrations'),
         ], 'public');
+
+        $this->publishes([
+            __DIR__.'\Http/Middleware/fm/setRootPath.php' =>base_path('app/Http/Middleware/fm/setRootPath.php'),
+        ], 'public');
+
+                $this->publishes([
+            __DIR__.'\Console/Commands/InstallAws.php' =>base_path('/Console/Commands/fm/InstallAws.php'),
+        ], 'public');
+        $this->publishes([
+            __DIR__.'\Console/Commands/RemoveExpirationFiles.php' =>base_path('/Console/Commands/fm/RemoveExpirationFiles.php'),
+        ], 'public');
     }
 }

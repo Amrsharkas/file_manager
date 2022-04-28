@@ -5,6 +5,7 @@ namespace Ie\FileManager\Http\Controllers;
 
 use Ie\FileManager\App\Services\Storage\FileStructure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FileManagerController extends Controller
 {
@@ -34,6 +35,7 @@ class FileManagerController extends Controller
             $contents = $this->fileSystem->getDirectoryStructure($mainPath,false,$cache);
             $directoriesPerTree = json_encode($this->fileSystem->filterDirectoryStructure($contents,'dir'));
             $disk=$this->fileSystem->getDisk();
+          //  return view('fm.base',compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk'));
             return $this->renderView(compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk'),'fm.base','fm.contents');
         }
         return 'Insufficient permissions';

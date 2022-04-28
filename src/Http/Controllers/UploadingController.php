@@ -94,7 +94,7 @@ class UploadingController extends Controller
     public function createNew(CreateNewRequest $request)
     {
         $data=$request->all();
-        $this->fileSystem->createNew($data);
+        return $this->fileSystem->createNew($data);
 
     }
 
@@ -119,6 +119,6 @@ class UploadingController extends Controller
 
     public function writeFile(Request $request){
         $data=$request->all();
-        $this->fileSystem->writeToFile($data);
+        return $this->fileSystem->writeToFile($data);
     }
 }

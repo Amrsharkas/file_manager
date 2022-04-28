@@ -10,6 +10,7 @@ class FilePermissionPartnerMapper
 
     public function __construct()
     {
+
     }
 
     public function  fetchPermissions(array $data)

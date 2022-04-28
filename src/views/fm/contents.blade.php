@@ -131,7 +131,7 @@
         @endforeach
 
 
-        <!--File list item-->}
+        <!--File list item-->
 
     </ul>
 {{--    <script>--}}
