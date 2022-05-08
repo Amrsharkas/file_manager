@@ -886,7 +886,12 @@ class FileStructure
             $this->config['filePermissions'];
             $this->filePermissions=app()->make($this->config['filePermissions']);
             $allowed_permissions=$this->filePermissions->getPermissions($this->applyCorrectPath($path),'path',true);
-            $access=$allowed_permissions->access;
+            if (isset($allowed_permissions)){
+                $access=$allowed_permissions->access;
+            }
+            else{
+                $access='[]';
+            }
             if (in_array($permission,json_decode($access))){
                 return true;
             }
