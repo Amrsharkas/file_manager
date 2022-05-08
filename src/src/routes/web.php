@@ -19,8 +19,7 @@ Route::get('/get-dir', 'Ie\FileManager\Http\Controllers\FileManagerController@ge
 Route::get('/get-tree', 'Ie\FileManager\Http\Controllers\FileManagerController@getTree');
 Route::get('/get-js-tree', 'Ie\FileManager\Http\Controllers\FileManagerController@getDirectoriesForTree');
 //ViewController
-Route::get('/preview-t
-ext', 'Ie\FileManager\Http\Controllers\ViewController@previewFileAsText');
+Route::get('/preview-text', 'Ie\FileManager\Http\Controllers\ViewController@previewFileAsText');
 Route::get('/preview-media', 'Ie\FileManager\Http\Controllers\ViewController@previewFileAsMedia');
     Route::get('/preview-media-url', 'Ie\FileManager\Http\Controllers\ViewController@previewFileAsMediaUrl');
 
