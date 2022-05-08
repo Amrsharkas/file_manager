@@ -16,11 +16,15 @@ class FilePermissionPartner implements IFilePermissionPartner
     private $config;
 
     protected $availablity;
-    
+
     private $user;
     
     protected $file_permissions;
-    
+
+    public function __construct()
+    {
+        
+    }
 
     public function getUserID() : ?int
     {
@@ -36,7 +40,8 @@ class FilePermissionPartner implements IFilePermissionPartner
     {
          $this->availablity=$availablity;
     }
-    
+
+
 
     public function setUser($user)
     {
@@ -72,26 +77,26 @@ class FilePermissionPartner implements IFilePermissionPartner
              $disk=$this->getUsedDisk();
              // you can return array that want
              $dataMapper = new FilePermissionPartnerMapper();
-             if ($path!=false){
-                 $result=$dataMapper->fetchPermissions([
-                     'user_id'=>$user,
-                     'disk'=>$disk,
-                     $search_path=>$path
-                 ]);
-             }
-             else{
-                 $result=$dataMapper->fetchPermissions([
-                     'user_id'=>$user,
-                     'disk'=>$disk,
-                     'user_id'=>$this->getUser()->id
-                 ]);
-             }
-             if(!$first){
-                 return $result;
-             }
-             else{
-                 return  reset($result);
-             }
+                 if ($path!=false){
+                     $result=$dataMapper->fetchPermissions([
+                         'user_id'=>$user,
+                         'disk'=>$disk,
+                         $search_path=>$path
+                     ]);
+                 }
+                 else{
+                     $result=$dataMapper->fetchPermissions([
+                         'user_id'=>$user,
+                         'disk'=>$disk,
+                         'user_id'=>$this->getUser()->id
+                     ]);
+                 }
+                 if(!$first){
+                     return $result;
+                 }
+                 else{
+                     return  $result->first();
+                 }
         }
         return null;
     }
