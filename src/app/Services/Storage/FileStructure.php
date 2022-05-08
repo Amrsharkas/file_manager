@@ -143,7 +143,7 @@ class FileStructure
             }
         }
         if ($operation=='Move'){
-           $this->deleteDir($source);
+            $this->deleteDir($source);
         }
     }
 
@@ -220,7 +220,7 @@ class FileStructure
         $this->storage->createDir($this->getParent($path).$to);
         $directorytList= $this->getOrStoreCollectionCache($path,true);
         if ($this->storage->getAdapter() instanceof  AwsS3Adapter){
-          //  dd("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->getParent($path).$this->separator.$to);
+            //  dd("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->getParent($path).$this->separator.$to);
             exec("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->getParent($path).$this->separator.$to,$output);
             $this->deleteDir($path);
             if (count($output)==0){
@@ -241,7 +241,7 @@ class FileStructure
         $this->cache->forgetFromCacheServer($this->getParent($path));
         $this->rebuildCacheStructure($this->getParent($path),false);
         return  true;
-      //  return $this->deleteDir($path);
+        //  return $this->deleteDir($path);
     }
 
 
@@ -295,7 +295,7 @@ class FileStructure
     public function getDirectoryStructure(string $path , bool $recursive = false,$cache=true): Collection
     {
         $path=$this->clearPath($path);
-       // $path=substr($path,1);
+        // $path=substr($path,1);
 //        $old_path=$path;
 //        $path=$this->applyPathPrefix($path);
         if ($this->isCacheUsed){
@@ -314,13 +314,13 @@ class FileStructure
             $collection=collect($collection)
                 ->whereIn('path',$allowed_permissions);
         }
-            $back= [
-                'type' => 'back',
-                'path' => $this->getParent($path),
-                'filename' => '..',
-                'size' => null,
-                'time' => null
-            ];
+        $back= [
+            'type' => 'back',
+            'path' => $this->getParent($path),
+            'filename' => '..',
+            'size' => null,
+            'time' => null
+        ];
         $collection->prepend($back);
         return $collection;
     }
@@ -389,13 +389,13 @@ class FileStructure
 
     public function getTreeStructure($mainPath,$recursive=true,$type='all',$forceNotUseCache=false): array
     {
-      // return Storage::disk($this->disk)->directories($mainPath);
+        // return Storage::disk($this->disk)->directories($mainPath);
         if ($this->isCacheUsed && !$forceNotUseCache){
             $encoded_tree=$this->getOrStoreCollectionCache($mainPath, $recursive);
             $this->tree= collect($encoded_tree);
         }
         else{
-         $this->tree= collect($this->storage->listContents($mainPath, $recursive));
+            $this->tree= collect($this->storage->listContents($mainPath, $recursive));
         }
         if ($type!='all'){
             $this->tree= $this->tree->where('type',$type);
@@ -449,7 +449,7 @@ class FileStructure
 
     public function readFileMetaData($path)
     {
-      //  return  $this->storage->getAdapter()->getMimetype($path);
+        //  return  $this->storage->getAdapter()->getMimetype($path);
         try {
             return $this->storage->getAdapter()->read($path);
         } catch (FileNotFoundException $e) {
@@ -548,7 +548,7 @@ class FileStructure
         else{
             return json_encode(['code'=>403,'status'=>'Forbidden']);
         }
-       // }
+        // }
     }
 
     public function moveFile(array $data,$destination)
@@ -588,10 +588,10 @@ class FileStructure
             $items=json_decode($data['data']['paths'],1);
             foreach ($items as $item){
                 if ($item['type']=='file'){
-                    $this->fileSystem->copyFile($item,$destination);
+                    $this->copyFile($item,$destination);
                 }
                 else if ($item['type']=='dir'){
-                    $this->fileSystem->copyOrMoveDir($item,$destination);
+                    $this->copyOrMoveDir($item,$destination);
                 }
             }
         }
@@ -620,17 +620,17 @@ class FileStructure
     public function copyOrMoveDir(array $data,$destination)
     {
         $operation=$data['operator'];
-      //  dd($data);
+        //  dd($data);
         if ($this->storage->getAdapter() instanceof  AwsS3Adapter){
             $path=$data['from_path'];
-         //   dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination);
-         //   dd("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination);
-          //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination.$this->separator.$data['file_name']);
+            //   dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination);
+            //   dd("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination);
+            //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination.$this->separator.$data['file_name']);
             $overrwite_path=$path;
-          //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$destination.$overrwite_seperator.$data['file_name']);
-        //    exec('aws configure list',$o,$c);
-      //      dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination.$overrwite_seperator.$data['file_name']);
-          //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$overrwite_path"." s3://".env('AWS_BUCKET').$this->separator.$this->applyCorrectPath($destination).$this->separator.$data['file_name']);
+            //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$destination.$overrwite_seperator.$data['file_name']);
+            //    exec('aws configure list',$o,$c);
+            //      dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination.$overrwite_seperator.$data['file_name']);
+            //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$overrwite_path"." s3://".env('AWS_BUCKET').$this->separator.$this->applyCorrectPath($destination).$this->separator.$data['file_name']);
             exec("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$overrwite_path"." s3://".env('AWS_BUCKET').$this->separator.$this->applyCorrectPath($destination).$this->separator.$data['file_name']);
             if ($operation=='Move'){
                 $this->deleteDir($data['from_path']);
@@ -642,7 +642,7 @@ class FileStructure
         }
         event(new Paste($operation,$data['from_path'],$destination,$data['file_name'],'dir',$this->getDisk()));
         if ($operation=='Copy'){
-           $this->cache->forgetFromCacheServer($this->applyPathPrefix($destination));
+            $this->cache->forgetFromCacheServer($this->applyPathPrefix($destination));
             $this->rebuildCacheStructure($this->applyPathPrefix($destination),false);
         }
         elseif($operation=='Move'){
@@ -695,11 +695,11 @@ class FileStructure
         $this->filePermissions = app()->make($this->config['filePermissions']);
         if (!$this->filePermissions->getFileManagerPermissions() ||
             ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::WRITE, $path))) {
-                $stream = tmpfile();
-                fwrite($stream, $content);
-                rewind($stream);
-                $this->storage->putStream($path, $stream);
-                return json_encode(['code' => 200, 'status' => 'Done']);
+            $stream = tmpfile();
+            fwrite($stream, $content);
+            rewind($stream);
+            $this->storage->putStream($path, $stream);
+            return json_encode(['code' => 200, 'status' => 'Done']);
         }
         else {
             return json_encode(['code' => 403, 'status' => 'Forbidden']);
@@ -708,7 +708,7 @@ class FileStructure
 
     public function buildBreadcrumbStructure(string $mainPath): array
     {
-       return $this->getAllParents($mainPath,true);
+        return $this->getAllParents($mainPath,true);
     }
 
     public function getDirectories($mainPath)
@@ -822,16 +822,16 @@ class FileStructure
 
     private function getOrStoreCollectionCache(string $path, bool $recursive,$cache=true)
     {
-      //$this->cache->flushAllInCacheServer();
+        //$this->cache->flushAllInCacheServer();
         if (!$cache){
             $this->cache->forgetFromCacheServer($path);
         }
         if ($this->cache->existInCacheServer($path.'_'.$this->getDisk())){
-                $collection=json_decode($this->cache->fetchFromCacheServer($path.'_'.$this->getDisk()),1);
-            }
+            $collection=json_decode($this->cache->fetchFromCacheServer($path.'_'.$this->getDisk()),1);
+        }
         else{
             $collection=  $this->rebuildCacheStructure($path,$recursive);
-            }
+        }
         return $collection;
     }
 
@@ -844,33 +844,33 @@ class FileStructure
 
     public function uploadLargeFiles($request)
     {
-            $path_to_upload = $request->path_to_upload;
-            $this->filePermissions = app()->make($this->config['filePermissions']);
-            if (!$this->filePermissions->getFileManagerPermissions() ||
-                ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::WRITE, $path_to_upload))) {
-                $file = $request->fileBlob;
-                $extension = $file->getClientOriginalExtension();
-                $check = $this->checkExistInDir($path_to_upload, $file->getClientOriginalName());
-                if ($check) {
-                    return [
-                        'status' => false,
-                        'msg' => 'file already exist'
-                    ];
-                }
-                $fileName = $file->getClientOriginalName() . '.' . $extension; // a unique file name
-                $disk = Storage::disk($this->disk);
-                $path = $disk->putFileAs($path_to_upload, $file, str_replace(' ','_',$fileName));
-                $disk->setVisibility($path, 'public');
-                event(new FilesUploaded($path, $this->disk));
-                $this->cache->forgetFromCacheServer($this->applyPathPrefix($path_to_upload));
-                $this->rebuildCacheStructure($this->applyPathPrefix($path_to_upload),false);
+        $path_to_upload = $request->path_to_upload;
+        $this->filePermissions = app()->make($this->config['filePermissions']);
+        if (!$this->filePermissions->getFileManagerPermissions() ||
+            ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::WRITE, $path_to_upload))) {
+            $file = $request->fileBlob;
+            $extension = $file->getClientOriginalExtension();
+            $check = $this->checkExistInDir($path_to_upload, $file->getClientOriginalName());
+            if ($check) {
                 return [
-                    'status' => true,
-                    'msg' => 'done uploaded '
+                    'status' => false,
+                    'msg' => 'file already exist'
                 ];
-            } else {
-                return json_encode(['code' => 403, 'status' => 'Forbidden']);
             }
+            $fileName = $file->getClientOriginalName() . '.' . $extension; // a unique file name
+            $disk = Storage::disk($this->disk);
+            $path = $disk->putFileAs($path_to_upload, $file, str_replace(' ','_',$fileName));
+            $disk->setVisibility($path, 'public');
+            event(new FilesUploaded($path, $this->disk));
+            $this->cache->forgetFromCacheServer($this->applyPathPrefix($path_to_upload));
+            $this->rebuildCacheStructure($this->applyPathPrefix($path_to_upload),false);
+            return [
+                'status' => true,
+                'msg' => 'done uploaded '
+            ];
+        } else {
+            return json_encode(['code' => 403, 'status' => 'Forbidden']);
+        }
     }
 
     private function checkExistInDir($path_to_upload, string $filename): bool
@@ -881,7 +881,7 @@ class FileStructure
 
     private function userHasPermissionToFile($permission,$path): bool
     {
-      //  return false;
+        //  return false;
         if ($this->config['denyAll']){
             $this->config['filePermissions'];
             $this->filePermissions=app()->make($this->config['filePermissions']);
