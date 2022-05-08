@@ -40,11 +40,11 @@ class FileUploaderServiceProvider extends ServiceProvider
             __DIR__.'\Http/Middleware/fm/setRootPath.php' =>base_path('app/Http/Middleware/fm/setRootPath.php'),
         ], 'public');
 
-                $this->publishes([
-            __DIR__.'\Console/Commands/InstallAws.php' =>base_path('/Console/Commands/fm/InstallAws.php'),
-        ], 'public');
-        $this->publishes([
-            __DIR__.'\Console/Commands/RemoveExpirationFiles.php' =>base_path('/Console/Commands/fm/RemoveExpirationFiles.php'),
-        ], 'public');
+//                $this->publishes([
+//            __DIR__.'\Console/Commands/InstallAws.php' =>base_path('/Console/Commands/fm/InstallAws.php'),
+//        ], 'public');
+//        $this->publishes([
+//            __DIR__.'\Console/Commands/RemoveExpirationFiles.php' =>base_path('/Console/Commands/fm/RemoveExpirationFiles.php'),
+//        ], 'public');
     }
 }

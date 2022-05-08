@@ -35,7 +35,10 @@ class FileManagerController extends Controller
             $contents = $this->fileSystem->getDirectoryStructure($mainPath,false,$cache);
             $directoriesPerTree = json_encode($this->fileSystem->filterDirectoryStructure($contents,'dir'));
             $disk=$this->fileSystem->getDisk();
-          //  return view('fm.base',compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk'));
+            $render_all=$request->input('render_all',false);
+            if ($render_all){
+                return view('fm.base',compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk'));
+           }
             return $this->renderView(compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk'),'fm.base','fm.contents');
         }
         return 'Insufficient permissions';

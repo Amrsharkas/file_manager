@@ -5,7 +5,7 @@
     <input hidden type="text" value="{{$type}}" id="type"  name="type">
     <div class="panel-body">
         <div class="input-group mar-btm">
-            <input value="{{$oldName}}"  id="new_name" name="new_name" type="text" placeholder="Rename" class="form-control">
+            <input value="{{$oldName}}"  id="newName" name="newName" type="text" placeholder="Rename" class="form-control">
             <span class="input-group-btn">
                 <button  class="btn btn-mint" type="submit">Rename</button>
             </span>

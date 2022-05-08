@@ -1,21 +1,149 @@
+function hideShowDownloader(show_or_hidden,msg='',progress=false){
+    if (show_or_hidden==1){
+        $('#downloader-container').removeClass('hidden');
+        $('#download_status').html(msg+'...')
+        $('#inner_status').html(msg+' Files ...')
+        if (progress!=true){
+            $('#downloader').addClass('hidden');
+        }
+        else{
+            $('#downloader').removeClass('hidden');
+        }
+    }
+    else{
+        $('#downloader-container').addClass('hidden');
+        $('#download_status').html('')
+        $('#inner_status').html('')
+    }
+}
+var pusher,channel;
+function initPusher() {
+    Pusher.logToConsole = false;
+    pusher = new Pusher($('#real_brodcast').attr('value'), {
+        cluster: 'eu'
+    });
+    channel = pusher.subscribe($('#real_brodcast').attr('data-channel'));
+    channel.bind('Ie\\FileManager\\App\\Events\\DownloadingStatusEvent', function(data) {
+        hideShowDownloader(1,'Downloading & Zipping',true);
+        downloadProgressBar(data);
+    })
+}
+var bar;
+function  preperePrgressBar(){
+    bar = new ProgressBar.Circle(downloader, {
+        color: '#aaa',
+        strokeWidth: 4,
+        trailWidth: 1,
+        easing: 'easeInOut',
+        duration: 1400,
+        text: {
+            autoStyleContainer: false
+        },
+        from: {
+            color: '#aaa',
+            width: 1
+        },
+        to: {
+            color: '#333',
+            width: 4
+        },
+        // Set default step function for all animate calls
+        step: function(state, circle) {
+            circle.path.setAttribute('stroke', state.color);
+            circle.path.setAttribute('stroke-width', state.width);
+            var value = Math.round(circle.value()*100);
+            circle.setText(value);
+        }
+    });
+    bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+    bar.text.style.fontSize = '2rem';
+}
+function downloadProgressBar(msg) {
+    bar.animate(msg);
+}
+function initInputFile(){
+    let path_to_upload
+    $("#input-id").fileinput({
+        uploadUrl: '/file-upload',
+        uploadExtraData:  function() {
+            let out ={}
+            out['_token'] =$('meta[name="csrf-token"]').attr('content')
+            out['path_to_upload']= $('#path_to_upload').attr('value')
+            return  out
+        },
+        uploadAsync: false,
+        enableResumableUpload: true,
+        overwriteInitial: false,
+        minFileCount: 1,
+        showBrowse: true,
+        showCaption: false,
+        showUpload: false,
+        showUploadStats: false,
+        browseOnZoneClick: true,
+        maxFileCount: 15,
+        maxFileSize: 6053641, //in kb
+        removeFromPreviewOnError: true,
+        mainClass: 'custom-file-uploader-style',
+        frameClass: 'krajee-default',
+        initialPreviewAsData: true // identify if you are sending preview data only and not the markup
+    }).on("filebatchselected", function(event, files) {
+        $("#input-id").fileinput("upload");
+        $('.file-preview').show();
+    })
+        .on("filechunkbeforesend", function(event, files) {
+            path_to_upload= $('#path_to_upload').attr('value')
+        })
 
+        .on("filebatchuploadcomplete", function(event, files) {
+            $('.file-preview').hide();
+            $('.progress').hide();
+        }).on('fileuploaderror', function(event, data, msg) {
+        // console.log('File Upload Error', 'ID: ' + data.fileId + ', Thumb ID: ' + data.previewId);
+    }).on("fileuploaded", function(event, previewId, index, fileId) {
+        // let res= JSON.parse(response);
+        // if (res.hasOwnProperty('code') && res.code==403){
+        //     $('.close').click();
+        //     swal({
+        //         title: "Uncompleted operation",
+        //         text: "you cant do this action",
+        //         type: "danger",
+        //         showCancelButton: false,
+        //         confirmButtonClass: "btn-danger",
+        //         closeOnConfirm: false
+        //     });
+        // }
+        // console.log(event, previewId, index, fileId)
+        getDirectory($('#path_to_upload').attr('value'),true)});
+    $('.fileinput-remove').addClass('fa fa-close');
+    $('.fileinput-remove').remove();
+    $('.btn.btn-primary.btn-file').hide();
+    $('.file-preview').hide();
+}
 function buildTree() {
     let jsonData = getJsonForTree();
     $('#jstree')
         .jstree({
             core: {
-                "check_callback": true,
+                "check_callback": function (operation, node, node_parent, node_position, more) {
+                    // if (operation=="move_node"){
+                    // //     console.log(operation)
+                    // //     console.log(node)
+                    // //     console.log(node_parent)
+                    // //     console.log(node_position)
+                    // //     console.log(more)
+                    // }
+                },
                 data: jsonData
             },
             types: {
                 "dir": {
                     "icon" : "demo-pli-folder icon-lg icon-xs"
                 },
-                "dir": {
-                    "icon" : "demo-pli-folder icon-lg icon-xs"
-                },
+                // "dir": {
+                //     "icon" : "demo-pli-folder icon-lg icon-xs"
+                // },
             },
-            plugins: ["search", "themes", "types"]
+            plugins: ["search", "themes", "types","dnd"],
         }).on('open_node.jstree', function (e, data) {
             data.instance.set_icon(data.node, "demo-pli-folder icon-lg icon-xs");
         }
@@ -32,12 +160,13 @@ function buildTree() {
             $('#jstree').jstree().toggle_node(data.node)
         }
     }).on('hover_node.jstree', function (e, data) {
-        // console.log($('#from_input').attr('value'))
+        // // console.log(data.node.data)
+        // // console.log($('#from_input').attr('value'))
         // if ($('#from_input').attr('value')!=''){
         //     moveFile('/post-move-file',{'paths':$('#from_input').attr('value') },data.node.data);
         //     getDirectory($('#path_to_upload').attr('value'))
         // }
-    })
+    });
 }
 
 function getJsonForTree() {
@@ -95,13 +224,19 @@ function getDirectory(path,cache=true) {
                     if (last_style!=undefined){
                         $('#demo-mail-list').addClass(last_style)
                     }
-                    history.pushState(null, null, url+'?dir='+path+query_params);
+                    // console.log(window.location.pathname);
+                    history.pushState(null, null, getURL()+'?dir='+path+query_params);
                 }
                 sortList()
+            initInputFile();
         },
 
     });
 
+}
+
+function getURL() {
+    return window.location.pathname ;
 }
 
 function sortList() {
@@ -147,7 +282,7 @@ $(document).ready(function () {
     });
 
     // $(document).on('change','#file_upload',function () {
-    //     console.log("sss")
+    // //     console.log("sss")
     //     $('.input-group').hide();
     //     // $('.kv-file-remove').hide();
     //     // $('.kv-file-upload').hide();
@@ -190,7 +325,7 @@ $(document).ready(function () {
     // }
     function renameFile(path,old_name,type) {
         let url='/rename-file';
-        console.log(path)
+        // console.log(path)
         let data={'path':path ,'old_name':old_name,'type' :type }
         $.ajax({
             url: url,
@@ -199,7 +334,7 @@ $(document).ready(function () {
             success: function (response) {
                 $('.qu_editor').html('')
                 $('.qu_editor').append(response);
-                $('.open_modal').click();
+                $('.ie_open_modal').click();
             },
         });
     }
@@ -222,15 +357,15 @@ $(document).ready(function () {
                 $('.qu_editor').addClass('text-reader')
                 $('.qu_editor').removeClass('image-reader')
                 $('.qu_editor').append(response);
-                $('.modal-footer').hide()
-                $('.open_modal').click();
+                $('.modal-footer').addClass('hidden')
+                $('.ie_open_modal').click();
             },
         });
     }
 
     $(document).on('click','#SubmitRenamebtn',function (e) {
         e.preventDefault();
-        if ($('#new_name').val()==''){
+        if ($('#newName').val()==''){
             alert('Name Cant be Blank')
             return false;
         }
@@ -246,20 +381,34 @@ $(document).ready(function () {
     $(document).on('click','#browseFile',function () {
         $('#input-id').trigger('click');
     })
+    let valuePerForm;
+    $(document).on('input','#newName',function (e) {
+        valuePerForm=$(this).val();
+    });
 
 
-    $(document).on('submit','.ajax_form',function (e) {
+    $(document).on('submit','#SubmitRenameForm',function (e) {
+        let action=$(this).attr('action');
+        if (action==='/post-create-file'){
+            hideShowDownloader(1,'Creating ')
+        }
+        else if (action==='/post-rename-file'){
+            hideShowDownloader(1,'Renaming')
+        }
         e.preventDefault();
-        $('.close').click();
+        $('#close_modal').click();
         let data={};
         $(this).find('input').each(function(){
             let name=$(this).attr('name');
             let value=$(this).attr('value');
-            if (name == 'new_name'){
-                value=$('#new_name').val();
+            if (name == 'newName'){
+                value=valuePerForm;
+                // console.log(name)
+                // console.log(value)
             }
             data[name] =value;
         });
+        // console.log(data)
         $.ajax({
             url: $(this).attr('action'),
             method: 'post',
@@ -270,7 +419,7 @@ $(document).ready(function () {
                     let  res=JSON.parse(response);
                     if (res.hasOwnProperty('code') && res.code==403){
                         success=0;
-                        $('.close').click();
+                        $('#close_modal').click();
                         swal({
                             title: "Uncompleted operation",
                             text: "you cant do this action",
@@ -285,13 +434,14 @@ $(document).ready(function () {
                     let path_to_upload=$('#path_to_upload').attr('value');
                     getDirectory(path_to_upload)
                 }
+                hideShowDownloader(0)
             },
         });
     });
 
 
     $(document).on('click','.qu_folder',function () {
-        console.log("sssss")
+        // console.log("sssss")
         let path =$(this).attr('data-path')
         $('#path_to_upload').attr('value',path)
         getDirectory(path);
@@ -302,11 +452,12 @@ $(document).ready(function () {
         let type =$(this).attr('data-type')
         let old_name =$(this).attr('data-name')
         $('#qu_title').html('Rename File');
-        $('.modal-footer').hide();
+        $('.modal-footer').addClass('hidden');
         renameFile(path,old_name,type)
     });
 
     function removeFiles(data) {
+        hideShowDownloader(1,'Removing')
         let path_to_upload=$('#path_to_upload').attr('value');
         $.ajax({
             url: '/remove',
@@ -318,7 +469,7 @@ $(document).ready(function () {
                     let  res=JSON.parse(response);
                     if (res.hasOwnProperty('code') && res.code==403){
                         success=0;
-                        $('.close').click();
+                        $('#close_modal').click();
                         swal({
                             title: "Uncompleted operation",
                             text: "you cant do this action",
@@ -330,7 +481,7 @@ $(document).ready(function () {
                     }
                 }
                 if (success==1){
-                    hideProgressbar();
+                  //  hideProgressbar();
                     swal(
                         'Deleted!',
                         'Your file has been deleted.',
@@ -338,6 +489,7 @@ $(document).ready(function () {
                     )
                     getDirectory(path_to_upload);
                 }
+                hideShowDownloader(0)
             },
         });
     }
@@ -379,7 +531,7 @@ $(document).ready(function () {
         $('#past_button').attr('data-name',name);
     });
     $(document).on('click','.qu_copy',function () {
-        console.log("Ssss")
+        // console.log("Ssss")
         let path =$(this).attr('data-path')
         let type =$(this).attr('data-type')
         let name =$(this).attr('data-name')
@@ -393,7 +545,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click','.qu_mapping_past_button',function () {
-        console.log("Sss")
+        // console.log("Sss")
         $('#past_button').click();
     });
 
@@ -422,7 +574,7 @@ $(document).ready(function () {
 
             }
         })
-        console.log(checkUnselect)
+        // console.log(checkUnselect)
         if (checkUnselect==true){
             $('.qu_check_all').removeClass('qu_check_all_removed_one')
             $('.qu_check_all').prop('checked',true)
@@ -455,8 +607,8 @@ $(document).ready(function () {
             //  showProgressbar('Moving...')
         }
         let data = {'paths':from };
-        console.log(url,data);
-        moveFile(url,data,$('#path_to_upload').attr('value'));
+        // console.log(url,data);
+        moveFile(url,data,$('#path_to_upload').attr('value'),operation);
     })
 
     $(document).on('click','.qu_move_many',function () {
@@ -480,19 +632,42 @@ $(document).ready(function () {
         }
     })
 
-    function moveFile(url,data,to_path) {
+    function moveFile(url,data,to_path,op) {
+        if (op=='Move')
+        hideShowDownloader(1,'Moving')
+        else if (op=='Copy')
+        hideShowDownloader(1,'Copying')
         $.ajax({
             url: url,
             method: 'post',
             data:
                 { _token:  $('meta[name="csrf-token"]').attr('content'), 'data':data ,'to_path':to_path},
             success: function (response) {
-                $('#past_button').attr('disabled',true);
-                $('#past_button').attr('data-operation','');
-                $('#past_button').attr('data-type','');
-                $('#past_button').attr('data-name','');
-                $('#past_button').val('');
-                getDirectory($('#path_to_upload').attr('value'))
+                let success=1
+                if (response!=''){
+                    let  res=JSON.parse(response);
+                    if (res.hasOwnProperty('code') && res.code==403){
+                        success=0;
+                        $('#close_modal').click();
+                        swal({
+                            title: "Uncompleted operation",
+                            text: "you cant do this action",
+                            type: "danger",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            closeOnConfirm: false
+                        });
+                    }
+                }
+                if (success==1){
+                    $('#past_button').attr('disabled',true);
+                    $('#past_button').attr('data-operation','');
+                    $('#past_button').attr('data-type','');
+                    $('#past_button').attr('data-name','');
+                    $('#past_button').val('');
+                    getDirectory($('#path_to_upload').attr('value'))
+                }
+                hideShowDownloader(0)
                 // hideProgressbar();
             },
         });
@@ -511,18 +686,19 @@ $(document).ready(function () {
         let type =$(this).attr('data-type')
         let path =$(this).attr('data-path')
         let name =$(this).attr('data-name')
-        console.log(type,path,name)
+        hideShowDownloader(1,'Downloading');
+        // console.log(type,path,name)
         downloadSingle(path,type,name)
     });
     $(document).on('click','.qu_breadcrumb',function () {
-        console.log($(this).attr('data-path'))
+        // console.log($(this).attr('data-path'))
         getDirectory($(this).attr('data-path'))
     });
 
     $(document).on('click','.qu_compress_many',function () {
         let data = [];
         $('.qu_checkbox').each(function() {
-            console.log($)
+            // console.log($)
             if ($(this).prop('checked')===true){
                 let path=$(this).closest('.qu_grand_parent').attr('data-path');
                 let type=$(this).closest('.qu_grand_parent').attr('data-type');
@@ -532,10 +708,8 @@ $(document).ready(function () {
             }
         })
         if (data.length>0){
-            console.log('ssss')
-            $('#downloader-container').show();
-           downloadProgressBar(0.01);
-            showProgressbar('Zipping...')
+            downloadProgressBar(0.01);
+            hideShowDownloader(1,'Download & Zipping',true);
             downloadZip(data,'many')
         }
         else{
@@ -545,7 +719,7 @@ $(document).ready(function () {
     $(document).on('click','.qu_remove_many',function () {
         let data = [];
         $('.qu_checkbox').each(function() {
-            console.log($)
+            // console.log($)
             if ($(this).prop('checked')===true){
                 let path=$(this).closest('.qu_grand_parent').attr('data-path');
                 let type=$(this).closest('.qu_grand_parent').attr('data-type');
@@ -554,7 +728,7 @@ $(document).ready(function () {
                 data.push(item);
             }
         })
-        console.log(data)
+        // console.log(data)
         if (data.length>0){
             // showProgressbar('Removing...')
             swal({
@@ -587,8 +761,8 @@ $(document).ready(function () {
         let path =$(this).attr('data-path')
         let name =$(this).attr('data-name')
         let data= [{"type": type, "path": path, "name": name }];
-        $('#downloader-container').show();
-       downloadProgressBar(0.01);
+        $('#downloader-container').removeClass('hidden');
+        downloadProgressBar(0.01);
         showProgressbar('Zipping...')
         downloadZip(data,'dir')
     });
@@ -601,50 +775,26 @@ $(document).ready(function () {
             success: function (link) {
                 //window.location.href='/get-compressed-link?uniqid='+link;
                 // hideProgressbar();
-                // console.log(link);
+                // // console.log(link);
                 setTimeout(function () {
-                    $('#downloader-container').hide();
-                    $('#download_status').html('Downloading...')
-                    $('#inner_status').html('Downloading Files ...')
+                    hideShowDownloader(0)
                 },3000)
-                console.log(link);
-                download('archive',link,true)
+                // console.log(link);
+                download('archive',link,false)
             },
         });
     }
     function downloadSingle(path,type,name) {
-        if (type=='dir'){
-            downloadZip(data,'dir')
-        }
-        let url='/download-single';
-        // console.log(path)
-        // console.log(type)
-        // console.log(name)
-        let download_url ='/download-single?path='+path+'&type='+type+'&name='+name;
+        // if (type=='dir'){
+        //     downloadZip(data,'dir')
+        // }
+        let download_url ='download-single?path='+path+'&type='+type+'&name='+name;
         download(name,download_url)
-        // $.ajax({
-        //     url: url,
-        //     method: 'get',
-        //     data: {'path':path ,'type' :type ,'name':name },
-        //     success: function (response) {
-        //         if (type=='file'){
-        //             let download_url ='/download-single?path='+path+'&type='+type+'&name='+name;
-        //             // if (isValidHttpUrl(response)){
-        //             //     download_url=response;
-        //             // }
-        //             // else{
-        //             //     download_url=`/preview-media?path=${path}`
-        //             // }
-        //            // console.log(download_url)
-        //             download(name,download_url)
-        //         }
-        //     },
-        // });
     }
 
     function download(filename, link,new_tab=false) {
         var element = document.createElement('a');
-        element.setAttribute('href', link);
+        element.setAttribute('href', '/'+link);
         // element.setAttribute('download',filename);
         if (new_tab==true){
             element.setAttribute('target', '_blank');
@@ -653,12 +803,13 @@ $(document).ready(function () {
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
+        hideShowDownloader(0);
     }
 
     $(document).on('click','.qu_write_file',function () {
         let contents=$('#contents').html();
         let path =$('#path_modal').val();
-        $('.close').click();
+        $('#close_modal').click();
         $.ajax({
             url: '/write-file',
             method: 'post',
@@ -666,7 +817,7 @@ $(document).ready(function () {
             success: function (response) {
                 let res= JSON.parse(response);
                 if (res.hasOwnProperty('code') && res.code==403){
-                    $('.close').click();
+                    $('#close_modal').click();
                     swal({
                         title: "Uncompleted operation",
                         text: "you cant do this action",
@@ -686,8 +837,8 @@ $(document).ready(function () {
         let path = $(this).attr('data-path');
         let extension = $(this).attr('data-extension');
         let mimetype = getTypeOfExtension(extension)
-        console.log(mimetype)
-        $('.modal-footer').hide()
+        // console.log(mimetype)
+        $('.modal-footer').addClass('hidden')
         $('.qu_editor').html('')
         if (mimetype == undefined) {
             let url = '/preview-text'
@@ -701,7 +852,7 @@ $(document).ready(function () {
                         response = JSON.parse(response);
                     }
                     catch (e) {
-                        $('.close').click();
+                        $('#close_modal').click();
                         swal({
                             title: "Unsupported file type",
                             text: "file cannot be previewed",
@@ -713,7 +864,7 @@ $(document).ready(function () {
                     }
                     $('#qu_title').html('Preview File')
                     $('.qu_editor').html('')
-                    $('.modal-footer').show()
+                    $('.modal-footer').removeClass('hidden')
                     $('#path_modal').attr('value', '')
                     $('#path_contents').attr('value', '')
                     $('#path_modal').val(response.path)
@@ -741,29 +892,29 @@ $(document).ready(function () {
             $('#qu_title').html('Preview image')
             $('.qu_editor').removeClass("text-reader")
             $('.qu_editor').addClass("image-reader")
-            $('.qu_editor').append(`<img style="width:570px" id="editor" src="${src}"/>`);
+            $('.qu_editor').append(`<img id="editor" src="${src}"/>`);
         }
         else {
-            let url = '/preview-media'
+            let url = '/preview-media-url'
             let data = {'path': path}
             $.ajax({
                 url: url,
                 method: 'get',
                 data: data,
                 success: function (link) {
-                    let download_url;
-                    if (isValidHttpUrl(link)) {
-                        download_url = link;
-                    } else {
-                        download_url = `/preview-media?path=${path}`
-                    }
+                    let download_url=link
+                    // if (isValidHttpUrl(link)) {
+                    //     download_url = link;
+                    // } else {
+                    //     download_url = `/preview-media?path=${path}`
+                    // }
                     $('.qu_editor').html('')
                     if (mimetype == 'audio') {
                         $('#qu_title').html('Play audio')
                         $('.qu_editor').removeClass("image-reader")
                         $('.qu_editor').removeClass("pdf-reader")
                         $('.qu_editor').append(
-                            `<audio style="width:550px" id="player" controls>\n' +
+                            `<audio id="player" controls>\n' +
                             '  <source src=${download_url} />\n' +
                             '' +
                             '  </audio>`);
@@ -773,31 +924,31 @@ $(document).ready(function () {
                         $('.qu_editor').removeClass("text-reader")
                         $('.qu_editor').removeClass("pdf-reader")
                         $('.qu_editor').addClass("image-reader")
-                        $('.qu_editor').append(` <video id="plyr-video">\n' +
-                            '                        <source src="${download_url}" >\n' +
+                        $('.qu_editor').append(` <video width="100%" id="plyr-video">\n' +
+                            '                        <source  src="${download_url}" >\n' +
                             '                    </video>`);
                         plyr.setup("#plyr-video");
                     } else if (mimetype == 'docs') {
-                        console.log(download_url);
+                        // console.log(download_url);
                         $('#qu_title').html('Preview  PDF')
                         $('.qu_editor').addClass("pdf-reader")
                         $('.qu_editor').removeClass("image-reader")
                         $('.qu_editor').removeClass("text-reader")
-                        $('.qu_editor').append(`<iframe width=700px allowfullscreen src="${download_url}">
+                        $('.qu_editor').append(`<iframe width="100%"  allowfullscreen src="${download_url}">
                     </iframe>`);
                         // plyr.setup("#plyr-video");
                     }
                 }
             });
         }
-        $('.open_modal').click();
+        $('.ie_open_modal').click();
     });
     function onPaste() {
         const editable = document.getElementById("editable");
         const dockerCompose = editable.innerText;
         editable.innerHTML = '<code id="yaml" class="language-yaml"></code>';
         const yaml = document.getElementById("yaml");
-        console.log(dockerCompose, Prism.languages.yaml);
+        // console.log(dockerCompose, Prism.languages.yaml);
         yaml.innerHTML = Prism.highlight(
             dockerCompose,
             Prism.languages.yml,
@@ -816,43 +967,6 @@ $(document).ready(function () {
 
         return url.protocol === "http:" || url.protocol === "https:";
     }
-    var bar;
-    function  preperePrgressBar(){
-        bar = new ProgressBar.Circle(downloader, {
-            color: '#aaa',
-            strokeWidth: 4,
-            trailWidth: 1,
-            easing: 'easeInOut',
-            duration: 1400,
-            text: {
-                autoStyleContainer: false
-            },
-            from: {
-                color: '#aaa',
-                width: 1
-            },
-            to: {
-                color: '#333',
-                width: 4
-            },
-            // Set default step function for all animate calls
-            step: function(state, circle) {
-                circle.path.setAttribute('stroke', state.color);
-                circle.path.setAttribute('stroke-width', state.width);
-                var value = Math.round(circle.value()*100);
-                circle.setText(value);
-            }
-        });
-        bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-        bar.text.style.fontSize = '2rem';
-    }
-    buildTree()
-    sortList()
-    preperePrgressBar();
-
-    function downloadProgressBar(msg) {
-        bar.animate(msg);
-    }
 
     $(document).on('dragstart','.qu_grand_parent',function (ev) {
         let path =$(this).attr('data-path')
@@ -868,27 +982,23 @@ $(document).ready(function () {
         if (type=='dir' || type=='back'){
             let from=$('#from_input').attr('value')
             let data = {'paths':from };
-            let from_path=JSON.parse(from)[0].from_path;
-            console.log(from_path)
-            moveFile('/post-move-file',data,$(this).attr('data-path'));
+           // let from_path=JSON.parse(from)[0].from_path;
+            // console.log(from_path)
+            moveFile('/post-move-file',data,$(this).attr('data-path'),'Move');
         }
         else{
             alert('cant move into file')
         }
-    })
+    });
 
-    Pusher.logToConsole = false;
-    var pusher = new Pusher($('#real_brodcast').attr('value'), {
-        cluster: 'eu'
-    });
-    var channel = pusher.subscribe($('#real_brodcast').attr('data-channel'));
-    channel.bind('Ie\\FileManager\\App\\Events\\DownloadingStatusEvent', function(data) {
-        $('#download_status').html('Zipping')
-        $('#inner_status').html('Zipping Files ...')
-        downloadProgressBar(data);
-    });
 });
 
 $(document).on('click','#close_modal',function (ev) {
     $('.qu_editor ').html('')
 })
+// initInputFile();
+// buildTree()
+// sortList()
+// preperePrgressBar();
+// initPusher();
+

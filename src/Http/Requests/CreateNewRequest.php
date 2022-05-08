@@ -24,7 +24,7 @@ class CreateNewRequest extends FormRequest
     public function rules()
     {
         return [
-            'new_name'=>'required',
+            'newName'=>'required',
              'type'=>'required',
              'path'=>'required',
         ];

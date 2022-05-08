@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f9bbfaa-f5e4-41ef-a303-cbdaaccf6195" name="Changes" comment="update file_manager" />
+    <list default="true" id="6f9bbfaa-f5e4-41ef-a303-cbdaaccf6195" name="Changes" comment="update file_manager">
+      <change afterPath="$PROJECT_DIR$/src/public/manager/css/demo/nifty.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/public/manager/fonts/glyphicons-halflings-regular.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/public/manager/fonts/glyphicons-halflings-regular.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FileUploaderServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/FileUploaderServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Controllers/FileManagerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Http/Controllers/FileManagerController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Controllers/UploadingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Http/Controllers/UploadingController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Controllers/ViewController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Http/Controllers/ViewController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Requests/CreateNewRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Http/Requests/CreateNewRequest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Requests/RenameRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Http/Requests/RenameRequest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/Services/Cache/Adapters/CacheSystem.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/Services/Cache/Adapters/CacheSystem.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/Services/Download/StrategyAWS.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/Services/Download/StrategyAWS.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/Services/FilePermission/FilePermissionPartner.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/Services/FilePermission/FilePermissionPartner.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/Services/FilePermission/FilePermissionPartnerMapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/Services/FilePermission/FilePermissionPartnerMapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/Services/Storage/FileStructure.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/Services/Storage/FileStructure.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/manager/css/nifty.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/manager/file_manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/manager/file_manager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/manager/test2.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/manager/file_manager.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/manager/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/manager/upload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/base.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/base.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/contents.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/contents.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/css.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/css.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/download.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/download.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/modal.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/modal.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/rename.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/rename.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/fm/scripts.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/fm/scripts.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/img.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/img_1.png" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,15 +67,18 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
     "last_opened_file_path": "C:/Users/Administrator/Documents/file_manager_pacakge",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Documents\file_manager_pacakge" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/config" />
     </key>
@@ -61,6 +98,7 @@
       <updated>1643736376580</updated>
       <workItem from="1643736377882" duration="10565000" />
       <workItem from="1643811006677" duration="643000" />
+      <workItem from="1652031833039" duration="1266000" />
     </task>
     <task id="LOCAL-00001" summary="fm">
       <created>1643736715492</created>
@@ -83,7 +121,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651159002021</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update file_manager">
+      <created>1651159020827</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1651159020827</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

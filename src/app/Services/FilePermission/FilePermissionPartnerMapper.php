@@ -8,7 +8,7 @@ class FilePermissionPartnerMapper
 {
     private  $table = 'file_user_permission';
 
-    public function __construct()
+    public function  __construct()
     {
 
     }
@@ -17,7 +17,7 @@ class FilePermissionPartnerMapper
     {
         return \DB::table($this->table)
             ->where($data)
-            ->get(['disk', 'path', 'access','type','has_all']);
+            ->get(['disk', 'parent','path', 'access','type','has_all']);
     }
 
     public function  savePermissions(array $data)

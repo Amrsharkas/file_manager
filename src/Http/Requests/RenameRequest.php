@@ -25,7 +25,7 @@ class RenameRequest extends FormRequest
     {
         return [
             'old_name'=>'required',
-            'new_name'=>'required|different:old_name',
+            'newName'=>'required',
             'path'=>'required',
             'type'=>'required'
         ];

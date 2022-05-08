@@ -476,6 +476,18 @@ class FileStructure
         //return Storage::disk($this->disk)->url($path);
     }
 
+    public function getUrlLinkForDownload($path)
+    {
+        if (!preg_match('/^[\x20-\x7e]*$/', basename($path))) {
+            $filename = Str::ascii(basename($path));
+        } else {
+            $filename = basename($path);
+        }
+        return Storage::disk($this->getDisk())->url($path);
+
+        //return Storage::disk($this->disk)->url($path);
+    }
+
     public function rename($data)
     {
         $this->filePermissions=app()->make($this->config['filePermissions']);
@@ -483,11 +495,11 @@ class FileStructure
             ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::WRITE,$data['path']))) {
             $type = $data['type'];
             if ($type == 'file') {
-                $this->renameFile($data['path'], $data['new_name']);
+                $this->renameFile($data['path'], $data['newName']);
             } else if ($type == 'dir') {
-                $this->renameFolder($data['path'], $data['old_name'], $data['new_name']);
+                $this->renameFolder($data['path'], $data['old_name'], $data['newName']);
             }
-            event(new Rename($data['old_name'], $data['new_name'], $data['path'], $type, $this->disk));
+            event(new Rename($data['old_name'], $data['newName'], $data['path'], $type, $this->disk));
         }
         else{
             return json_encode(['code'=>403,'status'=>'Forbidden']);
@@ -550,6 +562,44 @@ class FileStructure
 
     }
 
+    public function moveOperation($data){
+        $destination=$data['to_path'];
+        $this->filePermissions=app()->make($this->config['filePermissions']);
+        if (!$this->filePermissions->getFileManagerPermissions()  ||
+            ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::WRITE,$destination))) {
+            $items = json_decode($data['data']['paths'], 1);
+            foreach ($items as $item) {
+                if ($item['type'] == 'file') {
+                    $this->moveFile($item, $destination);
+                } else if ($item['type'] == 'dir') {
+                    $this->copyOrMoveDir($item, $destination);
+                }
+            }
+        }
+        else{
+            return json_encode(['code'=>403,'status'=>'Forbidden']);
+        }
+    }
+    public function copyOperation($data){
+        $destination=$data['to_path'];
+        $this->filePermissions=app()->make($this->config['filePermissions']);
+        if (!$this->filePermissions->getFileManagerPermissions()  ||
+            ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::WRITE,$destination))) {
+            $items=json_decode($data['data']['paths'],1);
+            foreach ($items as $item){
+                if ($item['type']=='file'){
+                    $this->fileSystem->copyFile($item,$destination);
+                }
+                else if ($item['type']=='dir'){
+                    $this->fileSystem->copyOrMoveDir($item,$destination);
+                }
+            }
+        }
+        else{
+            return json_encode(['code'=>403,'status'=>'Forbidden']);
+        }
+    }
+
     public function copyFile(array $data,$destination)
     {
         //dd($data['from_path'],$data['to_path'].$this->separator.$data['file_name']);
@@ -609,12 +659,12 @@ class FileStructure
         if (!$this->filePermissions->getFileManagerPermissions()  ||
             ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::CREATE,$data['path']))){
             if ($data['type']=='dir'){
-                $this->createDir($data['path'],$data['new_name']);
-                event(new DirectoryCreated($data['new_name'],$data['path'],$this->disk));
+                $this->createDir($data['path'],$data['newName']);
+                event(new DirectoryCreated($data['newName'],$data['path'],$this->disk));
             }
             else if ($data['type']=='file'){
-                $this->createFile($data['path'],$data['new_name']);
-                event(new FileCreated($data['new_name'],$data['path'],$this->disk));
+                $this->createFile($data['path'],$data['newName']);
+                event(new FileCreated($data['newName'],$data['path'],$this->disk));
             }
             if ($this->isCacheUsed){
                 $this->cache->forgetFromCacheServer($this->applyPathPrefix($data['path']));
@@ -742,7 +792,7 @@ class FileStructure
         return $this->addSeparators($path1).ltrim($path2, $this->separator);
     }
 
-    private function getBaseName(string $path): string
+    public function getBaseName(string $path): string
     {
         if (! $path || $path == $this->separator || ! trim($path, $this->separator)) {
             return $this->separator;
@@ -751,6 +801,11 @@ class FileStructure
         $tmp = explode($this->separator, trim($path, $this->separator));
 
         return  (string) array_pop($tmp);
+    }
+
+    public function getParentName(string $path): string
+    {
+        return  $this->getBaseName($this->getParent($path));
     }
 
     //islam done
@@ -771,8 +826,8 @@ class FileStructure
         if (!$cache){
             $this->cache->forgetFromCacheServer($path);
         }
-        if ($this->cache->existInCacheServer($path)){
-                $collection=json_decode($this->cache->fetchFromCacheServer($path),1);
+        if ($this->cache->existInCacheServer($path.'_'.$this->getDisk())){
+                $collection=json_decode($this->cache->fetchFromCacheServer($path.'_'.$this->getDisk()),1);
             }
         else{
             $collection=  $this->rebuildCacheStructure($path,$recursive);
@@ -782,8 +837,8 @@ class FileStructure
 
     public function rebuildCacheStructure($path,$recursive){
         $collection=$this->storage->listContents($path, $recursive);
-        $this->cache->storeToCacheServer($path,json_encode($collection),$this->cacheTimeout);
-         return $collection;
+        $this->cache->storeToCacheServer($path.'_'.$this->getDisk(),json_encode($collection),$this->cacheTimeout);
+        return $collection;
     }
 
 

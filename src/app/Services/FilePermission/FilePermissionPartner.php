@@ -14,34 +14,13 @@ class FilePermissionPartner implements IFilePermissionPartner
      * @var \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
      */
     private $config;
-    /**
-     * @var CacheSystem
-     */
-    protected $cache;
 
     protected $availablity;
-    /**
-     * @var mixed
-     */
-    private $cacheUsed;
-    /**
-     * @var CacheSystem
-     */
-    private $cacheTimeout;
-
+    
     private $user;
     
     protected $file_permissions;
-
-    public function __construct(CacheSystem $cache)
-    {
-        $this->config = config('service_configuration');
-        $this->cacheUsed=$this->config['PermissionsCache'];
-        if ($this->cacheUsed){
-            $this->cache=$cache;
-            $this->cacheTimeout= $this->config['PermissionsCacheTime'];
-        }
-    }
+    
 
     public function getUserID() : ?int
     {
@@ -57,20 +36,16 @@ class FilePermissionPartner implements IFilePermissionPartner
     {
          $this->availablity=$availablity;
     }
-
-    public function getcacheUsed() : ?int
-    {
-        return $this->cacheUsed;
-    }
-
-    public function getcacheTimeout() : ?int
-    {
-        return $this->cacheTimeout;
-    }
+    
 
     public function setUser($user)
     {
          $this->user =$user;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 
 
@@ -97,40 +72,25 @@ class FilePermissionPartner implements IFilePermissionPartner
              $disk=$this->getUsedDisk();
              // you can return array that want
              $dataMapper = new FilePermissionPartnerMapper();
-             if (!$this->cacheUsed){
+             if ($path!=false){
                  $result=$dataMapper->fetchPermissions([
                      'user_id'=>$user,
                      'disk'=>$disk,
                      $search_path=>$path
                  ]);
-                 if(!$first){
-                     return $result;
-                 }
-                 else{
-                     return  reset($result);
-                 }
              }
              else{
-                 //$this->cache->flushAllInCacheServer();
-                 $key=$user.'_'.$disk.'_'.$path.'_'.'permissions';
-                 if ($this->cache->existInCacheServer($key)){
-                     return  $this->cache->fetchFromCacheServer($key);
-                 }
-                 else{
-                     $permissions=$dataMapper->fetchPermissions([
-                         'user_id'=>$user,
-                         'disk'=>$disk,
-                         $search_path=>$path
-                     ]);
-                     $this->cache->storeToCacheServer($key,$permissions,$this->cacheTimeout);
-                     if($first!=1){
-                         return $permissions;
-                     }
-                     else{
-                         return   $permissions->first();
-                     }
-                 }
-
+                 $result=$dataMapper->fetchPermissions([
+                     'user_id'=>$user,
+                     'disk'=>$disk,
+                     'user_id'=>$this->getUser()->id
+                 ]);
+             }
+             if(!$first){
+                 return $result;
+             }
+             else{
+                 return  reset($result);
              }
         }
         return null;

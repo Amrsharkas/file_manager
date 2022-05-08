@@ -31,7 +31,7 @@ class ViewController extends Controller
 
     }
 
-    public function previewFileAsMedia(Request $request): string
+    public function previewFileAsMedia(Request $request)
     {
 //        return true;
 //        dd($request->all());
@@ -39,4 +39,11 @@ class ViewController extends Controller
         $path = $request->input('path');
         return $this->fileSystem->getUrlLink($path);
     }
+    public function previewFileAsMediaUrl(Request $request)
+    {
+        $path = $request->input('path');
+        return $this->fileSystem->getUrlLinkForDownload($path);
+    }
+
+
 }

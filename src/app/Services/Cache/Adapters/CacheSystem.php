@@ -19,7 +19,12 @@ class CacheSystem implements CacheServerInterface{
 
     public function storeToCacheServer($key, $value, $minutes)
     {
-        Cache::put($key, $value, $minutes);
+        if (!is_null($minutes)){
+            Cache::put($key, $value, $minutes);
+        }
+        else{
+            Cache::forever($key,$value);
+        }
       //  $this->redis->set($key,$value,$time_in_seconds);
     }
 

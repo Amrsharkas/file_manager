@@ -119,7 +119,7 @@
                             @endif
                         "></i>
                         </div>
-                    <div class="media-body">
+                    <div class="media-body-d">
                         <p class="file-name">{{$content['filename']}}
 {{--                            {{array_key_exists('extension',$content)?'.'.$content['extension']:''}}--}}
                         </p>

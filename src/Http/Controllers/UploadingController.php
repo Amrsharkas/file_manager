@@ -66,29 +66,12 @@ class UploadingController extends Controller
     public function move(Request $request)
     {
         $data = $request->all();
-        $destination=$data['to_path'];
-        $items=json_decode($data['data']['paths'],1);
-        foreach ($items as $item) {
-                if ($item['type'] == 'file') {
-                     $this->fileSystem->moveFile($item,$destination);
-                } else if ($item['type'] == 'dir') {
-                    $this->fileSystem->copyOrMoveDir($item,$destination);
-                }
-        }
+        return $this->fileSystem->moveOperation($data);
     }
 
         public function copy(Request $request){
             $data = $request->all();
-            $destination=$data['to_path'];
-            $items=json_decode($data['data']['paths'],1);
-            foreach ($items as $item){
-                if ($item['type']=='file'){
-                     $this->fileSystem->copyFile($item,$destination);
-                }
-                else if ($item['type']=='dir'){
-                     $this->fileSystem->copyOrMoveDir($item,$destination);
-                }
-            }
+            return $this->fileSystem->copyOperation($data);
     }
 
     public function createNew(CreateNewRequest $request)
