@@ -1,10 +1,5 @@
 {
-    "name": "ie/fm",
-    "autoload": {
-        "psr-4": {
-            "Ie\\FileManager\\": "src"
-        }
-    },
+    "name": "ie/FileManager",
     "authors": [
         {
             "name": "islamemam",
@@ -29,6 +24,11 @@
             "providers" : [
                 "Ie\\FileManager\\FileUploaderServiceProvider"
             ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Ie\\FileManager\\": "src/"
         }
     }
 }
