@@ -25,10 +25,5 @@
                 "Ie\\FileManager\\FileUploaderServiceProvider"
             ]
         }
-    },
-    "autoload": {
-        "psr-4": {
-            "ie\\fm\\": "src/"
-        }
     }
 }

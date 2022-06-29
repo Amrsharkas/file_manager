@@ -217,7 +217,7 @@ class FileStructure
 
     public function renameFolder(string $path,string $from, string $to): bool
     {
-        $this->storage->createDir($this->getParent($path).$to);
+        $this->storage->createDir($this->getParent($path) . $to);
         $directorytList= $this->getOrStoreCollectionCache($path,true);
         if ($this->storage->getAdapter() instanceof  AwsS3Adapter){
           //  dd("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->getParent($path).$this->separator.$to);
@@ -380,7 +380,7 @@ class FileStructure
             foreach ($breadcrumbStructure as $breadcrumb_item){
                 $breadcrumb=[];
                 $breadcrumb['name']=$breadcrumb_item;
-                $breadcrumb['path']=substr($mainPath, 0, strpos($mainPath, $breadcrumb_item)).$breadcrumb_item;
+                $breadcrumb['path']= FileStructure . phpsubstr($mainPath, 0, strpos($mainPath, $breadcrumb_item));
                 $breadcrumbs[]=$breadcrumb;
             }
         }
@@ -789,7 +789,7 @@ class FileStructure
             return $this->addSeparators($path1);
         }
 
-        return $this->addSeparators($path1).ltrim($path2, $this->separator);
+        return $this->addSeparators($path1) . ltrim($path2, $this->separator);
     }
 
     public function getBaseName(string $path): string

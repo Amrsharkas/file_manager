@@ -117,10 +117,10 @@ ul .dropdown-menu-right li > a:hover {
 }
 @font-face {
     font-family: "premium-line-icons";
-    src: url("./fonts/premium-line-icons.eot");
-    src: url("./fonts/premium-line-icons.eot") format("embedded-opentype"),
-    url("./fonts/premium-line-icons.ttf") format("truetype"),
-    url("./fonts/premium-line-icons.woff") format("woff"),
+    src: url("fonts/premium-line-icons.eot");
+    src: url("fonts/premium-line-icons.eot") format("embedded-opentype"),
+    url("fonts/premium-line-icons.ttf") format("truetype"),
+    url("fonts/premium-line-icons.woff") format("woff"),
     url("fonts/premium-line-icons.svg?k9mp21#premium-line-icons")
     format("svg");
     font-weight: normal;

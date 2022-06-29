@@ -65,7 +65,7 @@ class RemoveExpirationFiles extends Command
      */
     public function handle()
     {
-        $inp = file_get_contents(public_path().'/'.$this->path);
+        $inp = file_get_contents(public_path() . 'RemoveExpirationFiles.php/' .$this->path);
         $tempArray = json_decode($inp,1);
         $tempArrayCollection=collect($tempArray);
         $expiration_files=$tempArrayCollection
@@ -76,7 +76,7 @@ class RemoveExpirationFiles extends Command
 
         foreach ($expiration_files as $expiration_file){
             try{
-                $this->tmpfs->remove($expiration_file,public_path().'/');
+                $this->tmpfs->remove($expiration_file, public_path() . 'RemoveExpirationFiles.php/');
             }
             catch (\Exception $exception){
                 throw new \Exception($exception->getMessage());
@@ -86,6 +86,6 @@ class RemoveExpirationFiles extends Command
             return in_array($element['uuid'],$expiration_files);
         });
         $jsonData = json_encode($validDownloads->toArray());
-        file_put_contents(public_path().'/'.$this->path, $jsonData);
+        file_put_contents(public_path() . 'RemoveExpirationFiles.php/' .$this->path, $jsonData);
     }
 }

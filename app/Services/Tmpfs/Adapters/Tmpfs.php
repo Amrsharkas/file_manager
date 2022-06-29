@@ -51,29 +51,29 @@ class Tmpfs implements  TmpfsInterface
             $flags = FILE_APPEND;
         }
 
-        file_put_contents($this->getPath().$filename, $data, $flags);
+        file_put_contents($this->getPath() . $filename, $data, $flags);
     }
 
     public function getFileLocation(string $filename): string
     {
         $filename = $this->sanitizeFilename($filename);
 
-        return $this->getPath().$filename;
+        return $this->getPath() . $filename;
     }
 
     public function read(string $filename): string
     {
         $filename = $this->sanitizeFilename($filename);
 
-        return (string) file_get_contents($this->getPath().$filename);
+        return (string) file_get_contents($this->getPath() . $filename);
     }
 
     public function readStream(string $filename): array
     {
         $filename = $this->sanitizeFilename($filename);
 
-        $stream = fopen($this->getPath().$filename, 'r');
-        $filesize = filesize($this->getPath().$filename);
+        $stream = fopen($this->getPath() . $filename, 'r');
+        $filesize = filesize($this->getPath() . $filename);
 
         return [
             'filename' => $filename,
@@ -86,13 +86,13 @@ class Tmpfs implements  TmpfsInterface
     {
         $filename = $this->sanitizeFilename($filename);
 
-        return file_exists($this->getPath().$filename);
+        return file_exists($this->getPath() . $filename);
     }
 
     public function findAll($pattern): array
     {
         $files = [];
-        $matches = glob($this->getPath().$pattern);
+        $matches = glob($this->getPath() . $pattern);
         if (! empty($matches)) {
             foreach ($matches as $filename) {
                 if (is_file($filename)) {
