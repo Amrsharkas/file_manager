@@ -1,10 +1,10 @@
 <?php
 
-namespace Ie\FileManager\App\Console\Command;
+namespace ie\fm\App\Console\Command;
 
 
-use Ie\FileManager\App\Services\Storage\FileStructure;
-use Ie\FileManager\App\Services\Tmpfs\Adapters\Tmpfs;
+use ie\fm\App\Services\Storage\FileStructure;
+use ie\fm\App\Services\Tmpfs\Adapters\Tmpfs;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;

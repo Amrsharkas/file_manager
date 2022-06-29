@@ -1,10 +1,10 @@
 <?php
 
-namespace Ie\FileManager\Http\Controllers;
+namespace ie\fm\Http\Controllers;
 
-use Ie\FileManager\Http\Requests\CreateNewRequest;
-use Ie\FileManager\Http\Requests\RenameRequest;
-use Ie\FileManager\App\Services\Storage\FileStructure;
+use ie\fm\Http\Requests\CreateNewRequest;
+use ie\fm\Http\Requests\RenameRequest;
+use ie\fm\App\Services\Storage\FileStructure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\FileManager\App\Services\FilePermission;
+namespace ie\fm\App\Services\FilePermission;
 
 interface IFilePermissionPartner
 {

@@ -22,13 +22,13 @@
     "extra": {
         "laravel": {
             "providers" : [
-                "Ie\\FileManager\\FileUploaderServiceProvider"
+                "ie\\fm\\FileUploaderServiceProvider"
             ]
         }
     },
     "autoload": {
         "psr-4": {
-            "Ie\\FileManager\\": "src//"
+            "ie\\fm\\": "src/"
         }
     }
 }
