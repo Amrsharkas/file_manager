@@ -3,6 +3,7 @@
     "description": "file manager for local and s3 with awscli",
     "autoload": {
         "psr-4": {
+            "App\\": "src/app/",
             "Emam\\Filemanager\\": "src/"
         }
     },
