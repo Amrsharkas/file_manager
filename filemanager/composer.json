@@ -1,0 +1,28 @@
+{
+    "name": "emam/filemanager",
+    "description": "file manager for local and s3 with awscli",
+    "autoload": {
+        "psr-4": {
+            "Emam\\Filemanager\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Islam9595",
+            "email": "iemam@qurtobasolutions.com"
+        }
+    ],
+    "require": {
+        "php": "^7.3|^8.0",
+        "ext-json": "*",
+        "fruitcake/laravel-cors": "^2.0",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "laravel/framework": "^8.0",
+        "laravel/sanctum": "^2.11",
+        "laravel/tinker": "^2.5",
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "league/flysystem-ziparchive": "^1.0",
+        "pion/laravel-chunk-upload": "^1.4",
+        "predis/predis": "^1.1"
+    }
+}
