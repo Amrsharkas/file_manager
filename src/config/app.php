@@ -175,7 +175,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        \Ie\FileManager\FileUploaderServiceProvider::class
+        \ie\fm\FileUploaderServiceProvider::class
 
     ],
 

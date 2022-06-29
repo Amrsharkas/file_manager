@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\FileManager\App\Factory;
+namespace ie\fm\App\Factory;
 
 
 class Node

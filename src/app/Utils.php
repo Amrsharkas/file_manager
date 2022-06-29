@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\FileManager\App;
+namespace ie\fm\App;
 
 class Utils {
     const READ = 1;

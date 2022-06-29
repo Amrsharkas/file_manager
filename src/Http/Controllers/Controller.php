@@ -1,8 +1,8 @@
 <?php
 
-namespace Ie\FileManager\Http\Controllers;
+namespace ie\fm\Http\Controllers;
 
-use Ie\FileManager\App\Traits\RenderView;
+use ie\fm\App\Traits\RenderView;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;

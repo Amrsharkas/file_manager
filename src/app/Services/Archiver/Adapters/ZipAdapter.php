@@ -1,6 +1,6 @@
 <?php
 
-namespace Ie\FileManager\App\Services\Archiver\Adapters;
+namespace ie\fm\App\Services\Archiver\Adapters;
 
 use League\Flysystem\Config as Flyconfig;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;

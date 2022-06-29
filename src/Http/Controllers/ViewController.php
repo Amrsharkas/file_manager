@@ -1,9 +1,9 @@
 <?php
 
-namespace Ie\FileManager\Http\Controllers;
+namespace ie\fm\Http\Controllers;
 
 
-use Ie\FileManager\App\Services\Storage\FileStructure;
+use ie\fm\App\Services\Storage\FileStructure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

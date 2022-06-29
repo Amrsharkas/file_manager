@@ -8,11 +8,11 @@
  * For the full copyright and license information, please view the LICENSE file
  */
 
-namespace Ie\FileManager\App\Services\Archiver;
+namespace ie\fm\App\Services\Archiver;
 
 
 
-use Ie\FileManager\App\Services\Storage\FileStructure;
+use ie\fm\App\Services\Storage\FileStructure;
 
 interface ArchiverInterface
 {
