@@ -2,7 +2,7 @@
 return [
     'disk'=>'s3',
     'denyAll'=>false,
-    'middlewares'=>[\ie\fm\Http\Middleware\fm\setRootPath::class],
+    'middlewares'=>[\Ie\FileManager\Http\Middleware\fm\setRootPath::class],
     'filePermissions'=>'App\\Services\\FilePermission\\FilePermissionPartner',
     'PermissionsCache'=>true,
     'PermissionsCacheTime'=>true,
@@ -53,5 +53,5 @@ return [
             ],
         ],
     ],
-    'file_permissions'=>'ie\fm\App\Services\FilePermission\FilePermissionPartner',
+    'file_permissions'=>'Ie\FileManager\App\Services\FilePermission\FilePermissionPartner',
 ];

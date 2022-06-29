@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm\App\Events;
+namespace Ie\FileManager\App\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;

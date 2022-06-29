@@ -1,9 +1,9 @@
 <?php
 
-namespace ie\fm\App\Services\Cache\Adapters;
+namespace Ie\FileManager\App\Services\Cache\Adapters;
 
 
-use ie\fm\App\Services\Cache\CacheServerInterface;
+use Ie\FileManager\App\Services\Cache\CacheServerInterface;
 use Illuminate\Support\Facades\Cache;
 
 class CacheSystem implements CacheServerInterface{

@@ -1,8 +1,8 @@
 <?php
 
-namespace ie\fm\Http;
+namespace Ie\FileManager\Http;
 
-use ie\fm\Http\Middleware\setRootPath;
+use Ie\FileManager\Http\Middleware\setRootPath;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

@@ -1,9 +1,9 @@
 <?php
 
-namespace ie\fm\Http\Controllers;
+namespace Ie\FileManager\Http\Controllers;
 
 
-use ie\fm\App\Services\Storage\FileStructure;
+use Ie\FileManager\App\Services\Storage\FileStructure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

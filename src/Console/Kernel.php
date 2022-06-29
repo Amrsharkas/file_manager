@@ -1,9 +1,9 @@
 <?php
 
-namespace ie\fm\App\Console;
+namespace Ie\FileManager\App\Console;
 
-use ie\fm\App\Console\Command\InstallAws;
-use ie\fm\App\Console\Command\RemoveExpirationFiles;
+use Ie\FileManager\App\Console\Command\InstallAws;
+use Ie\FileManager\App\Console\Command\RemoveExpirationFiles;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

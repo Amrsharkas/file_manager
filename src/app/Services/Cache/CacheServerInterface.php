@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm\App\Services\Cache;
+namespace Ie\FileManager\App\Services\Cache;
 
 interface CacheServerInterface
 {

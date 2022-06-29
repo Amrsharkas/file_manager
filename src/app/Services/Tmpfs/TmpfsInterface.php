@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm\App\Services\Tmpfs;
+namespace Ie\FileManager\App\Services\Tmpfs;
 
 interface TmpfsInterface
 {

@@ -1,5 +1,5 @@
 {
-    "name": "ie/file-manager",
+    "name": "ie/fm",
     "authors": [
         {
             "name": "islamemam",
@@ -22,13 +22,13 @@
     "extra": {
         "laravel": {
             "providers" : [
-                "ie\\fm\\FileUploaderServiceProvider"
+                "Ie\\FileManager\\FileUploaderServiceProvider"
             ]
         }
     },
     "autoload": {
         "psr-4": {
-            "ie\\fm\\": "src/"
+            "Ie\\FileManager\\": "src//"
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm\App\Console\Command;
+namespace Ie\FileManager\App\Console\Command;
 
 use Illuminate\Console\Command;
 

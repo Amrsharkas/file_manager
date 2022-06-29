@@ -1,18 +1,18 @@
 <?php
 
-namespace ie\fm\Http\Controllers;
+namespace Ie\FileManager\Http\Controllers;
 
-use ie\fm\App\Events\DownloadingStatusEvent;
-use ie\fm\App\Services\Archiver\Adapters\CustomZipArchive;
-use ie\fm\App\Services\Archiver\Adapters\ZipArchiver;
-use ie\fm\App\Services\Archiver\ArchiverInterface;
-use ie\fm\App\Services\Download\StrategyAWS;
-use ie\fm\App\Services\Download\StrategyDefault;
-use ie\fm\App\Services\Download\StrategyDownloadContext;
-use ie\fm\App\Services\Download\StrategyLocal;
-use ie\fm\App\Services\Storage\FileStructure;
-use ie\fm\App\Services\Tmpfs\Adapters\Tmpfs;
-use ie\fm\App\Services\Tmpfs\TmpfsInterface;
+use Ie\FileManager\App\Events\DownloadingStatusEvent;
+use Ie\FileManager\App\Services\Archiver\Adapters\CustomZipArchive;
+use Ie\FileManager\App\Services\Archiver\Adapters\ZipArchiver;
+use Ie\FileManager\App\Services\Archiver\ArchiverInterface;
+use Ie\FileManager\App\Services\Download\StrategyAWS;
+use Ie\FileManager\App\Services\Download\StrategyDefault;
+use Ie\FileManager\App\Services\Download\StrategyDownloadContext;
+use Ie\FileManager\App\Services\Download\StrategyLocal;
+use Ie\FileManager\App\Services\Storage\FileStructure;
+use Ie\FileManager\App\Services\Tmpfs\Adapters\Tmpfs;
+use Ie\FileManager\App\Services\Tmpfs\TmpfsInterface;
 use Aws\Sdk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -160,7 +160,7 @@ class DownloadController extends Controller
 //                $zip->addFile($filePath,$relativePath);
 //                $downloaded+=$file->getSize();
 //                dump($downloaded);
-//                event(new \ie\fm\App\Events\SendMessage((int)(($downloaded/$fullSize) * 100)));
+//                event(new \Ie\FileManager\App\Events\SendMessage((int)(($downloaded/$fullSize) * 100)));
 //            }
 //        }
 //        event(new \App\Events\SendMessage(100));

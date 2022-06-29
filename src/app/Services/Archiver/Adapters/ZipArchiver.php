@@ -1,10 +1,10 @@
 <?php
 
-namespace ie\fm\App\Services\Archiver\Adapters;
-use ie\fm\App\Services\Archiver\ArchiverInterface;
-use ie\fm\App\Services\Storage\FileStructure;
-use ie\fm\App\Services\Tmpfs\Adapters\Tmpfs;
-use ie\fm\App\Services\Tmpfs\TmpfsInterface;
+namespace Ie\FileManager\App\Services\Archiver\Adapters;
+use Ie\FileManager\App\Services\Archiver\ArchiverInterface;
+use Ie\FileManager\App\Services\Storage\FileStructure;
+use Ie\FileManager\App\Services\Tmpfs\Adapters\Tmpfs;
+use Ie\FileManager\App\Services\Tmpfs\TmpfsInterface;
 use League\Flysystem\Filesystem as Flysystem;
 
 class ZipArchiver implements ArchiverInterface

@@ -1,21 +1,21 @@
 <?php
 
-namespace ie\fm\App\Services\Storage;
+namespace Ie\FileManager\App\Services\Storage;
 
 
-use ie\fm\App\Events\Deleted;
-use ie\fm\App\Events\DirectoryCreated;
-use ie\fm\App\Events\FileCreated;
-use ie\fm\App\Events\FilesUploaded;
-use ie\fm\App\Events\Paste;
-use ie\fm\App\Events\Rename;
-use ie\fm\App\Factory\Node;
-use ie\fm\App\Factory\NodeFactory;
-use ie\fm\App\Jobs\RenameJob;
-use ie\fm\App\Models\FilePermission;
-use ie\fm\App\Services\Cache\Adapters\CacheSystem;
-use ie\fm\App\Services\Cache\Adapters\RedisServer;
-use ie\fm\App\Utils;
+use Ie\FileManager\App\Events\Deleted;
+use Ie\FileManager\App\Events\DirectoryCreated;
+use Ie\FileManager\App\Events\FileCreated;
+use Ie\FileManager\App\Events\FilesUploaded;
+use Ie\FileManager\App\Events\Paste;
+use Ie\FileManager\App\Events\Rename;
+use Ie\FileManager\App\Factory\Node;
+use Ie\FileManager\App\Factory\NodeFactory;
+use Ie\FileManager\App\Jobs\RenameJob;
+use Ie\FileManager\App\Models\FilePermission;
+use Ie\FileManager\App\Services\Cache\Adapters\CacheSystem;
+use Ie\FileManager\App\Services\Cache\Adapters\RedisServer;
+use Ie\FileManager\App\Utils;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;

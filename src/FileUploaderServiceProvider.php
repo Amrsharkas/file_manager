@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm;
+namespace Ie\FileManager;
 
 use Illuminate\Support\ServiceProvider;
 

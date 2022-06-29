@@ -1,7 +1,7 @@
 <?php
 
 
-namespace ie\fm\App\Services\FilePermission;
+namespace Ie\FileManager\App\Services\FilePermission;
 
 
 class FilePermissionPartnerMapper

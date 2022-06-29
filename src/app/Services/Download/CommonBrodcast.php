@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm\App\Services\Download;
+namespace Ie\FileManager\App\Services\Download;
 
 class CommonBrodcast
 {

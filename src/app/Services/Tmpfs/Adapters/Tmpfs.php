@@ -1,9 +1,9 @@
 <?php
 
-namespace ie\fm\App\Services\Tmpfs\Adapters;
+namespace Ie\FileManager\App\Services\Tmpfs\Adapters;
 
 
-use ie\fm\App\Services\Tmpfs\TmpfsInterface;
+use Ie\FileManager\App\Services\Tmpfs\TmpfsInterface;
 
 class Tmpfs implements  TmpfsInterface
 {

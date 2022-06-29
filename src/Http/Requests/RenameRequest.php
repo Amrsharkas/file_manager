@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm\Http\Requests;
+namespace Ie\FileManager\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

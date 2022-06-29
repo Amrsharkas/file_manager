@@ -1,5 +1,5 @@
 <?php
-namespace ie\fm\App\Traits;
+namespace Ie\FileManager\App\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;

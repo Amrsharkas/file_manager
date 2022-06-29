@@ -1,6 +1,6 @@
 <?php
 
-namespace ie\fm\App\Services\Download;
+namespace Ie\FileManager\App\Services\Download;
 
 use function PHPUnit\Framework\fileExists;
 
