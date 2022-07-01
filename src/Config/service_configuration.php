@@ -2,7 +2,7 @@
 return [
     'disk'=>'s3',
     'denyAll'=>false,
-    'middlewares'=>[\Emam\Filemanager\Http\Middleware\fm\setRootPath::class],
+    'middlewares'=>[\Emam\Filemanager\Http\Middleware\Fm\setRootPath::class],
     'filePermissions'=>'App\\Services\\FilePermission\\FilePermissionPartner',
     'PermissionsCache'=>true,
     'PermissionsCacheTime'=>true,

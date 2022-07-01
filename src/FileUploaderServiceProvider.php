@@ -37,7 +37,7 @@ class FileUploaderServiceProvider extends ServiceProvider
         ], 'public');
 
         $this->publishes([
-            __DIR__ . '\Http/Middleware/fm/setRootPath.php' =>base_path('app/Http/Middleware/fm/setRootPath.php'),
+            __DIR__ . '\Http/Middleware/Fm/setRootPath.php' =>base_path('app/Http/Middleware/fm/setRootPath.php'),
         ], 'public');
 
 //                $this->publishes([

@@ -1,6 +1,6 @@
 <?php
 
-namespace Emam\Filemanager\Http\Middleware\fm;
+namespace Emam\Filemanager\Http\Middleware\Fm;
 
 use Closure;
 use Illuminate\Http\Request;
