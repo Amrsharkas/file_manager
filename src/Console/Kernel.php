@@ -2,8 +2,8 @@
 
 namespace Emam\Filemanager\Console;
 
-use Emam\Filemanager\App\Console\Command\InstallAws;
-use Emam\Filemanager\App\Console\Command\RemoveExpirationFiles;
+use Emam\Filemanager\App\Console\Commands\InstallAws;
+use Emam\Filemanager\App\Console\Commands\RemoveExpirationFiles;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

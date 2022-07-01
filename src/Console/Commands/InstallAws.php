@@ -1,6 +1,6 @@
 <?php
 
-namespace Emam\Filemanager\Console\Command;
+namespace Emam\Filemanager\Console\Commands;
 
 use Illuminate\Console\Command;
 
