@@ -30,7 +30,8 @@
     "autoload": {
         "psr-4": {
             "Emam\\Filemanager\\": "src/",
-            "Emam\\Filemanager\\App\\Traits\\": "src/app/Traits/"
+            "Emam\\Filemanager\\App\\Traits\\": "src/app/Traits/",
+            "Emam\\Filemanager\\App\\Services\\Storage\\": "src/app/Services/Storage/"
         }
     }
 }
