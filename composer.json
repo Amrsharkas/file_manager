@@ -28,9 +28,6 @@
         }
     },
     "autoload": {
-        "classmap": [
-            "classmap"
-        ],
         "psr-4": {
             "Emam\\Filemanager\\": "src/"
         }
