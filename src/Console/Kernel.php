@@ -1,6 +1,6 @@
 <?php
 
-namespace Emam\Filemanager\App\Console;
+namespace Emam\Filemanager\Console;
 
 use Emam\Filemanager\App\Console\Command\InstallAws;
 use Emam\Filemanager\App\Console\Command\RemoveExpirationFiles;
