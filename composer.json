@@ -26,11 +26,5 @@
                 "Emam\\Filemanager\\FileUploaderServiceProvider"
             ]
         }
-    },
-    "autoload": {
-        "psr-4": {
-            "Emam\\Filemanager\\": "src/",
-            "App\\": "src/app/"
-        }
     }
 }
