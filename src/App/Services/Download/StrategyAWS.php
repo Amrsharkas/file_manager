@@ -12,7 +12,7 @@ class StrategyAWS extends  CommonBrodcast
     public function download($current,$paths,$archiver,$fileSystem){
         $path_server=public_path('temp_downloads'.DIRECTORY_SEPARATOR.$current);
         if (!is_dir($path_server)){
-            mkdir($path_server,777);
+            mkdir($path_server,0777,true);
         }
         $config=config('service_configuration');
         $filePermissions=app()->make($config['filePermissions']);;
@@ -28,7 +28,7 @@ class StrategyAWS extends  CommonBrodcast
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
                     if (!is_dir($first_parent)) {
-                        mkdir($first_parent, 777);
+                        mkdir($first_parent, 0777,true);
                     }
                     $this->creatDirectoriesRecursive($allowed_permissions_collection,$allowed_permissions_array,$path,$path_server,$fileSystem,$first_parent);
                 }
@@ -62,7 +62,7 @@ class StrategyAWS extends  CommonBrodcast
                 $overwrite_path = $first_parent . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $fileSystem->getBaseName($inner->path));
                 if (!is_dir($overwrite_path)) {
                     try {
-                        mkdir($overwrite_path, 777);
+                        mkdir($overwrite_path, 0777,true);
                     } catch (\Exception $e) {
                         dump('error');
                     }

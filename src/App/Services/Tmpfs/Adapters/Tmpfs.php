@@ -32,7 +32,7 @@ class Tmpfs implements  TmpfsInterface
         $credential=$service_configuration['App\Services\Tmpfs\TmpfsInterface'];
         $this->path=$credential['config']['path'];
         if (! is_dir($this->path)) {
-            mkdir($this->path);
+            mkdir($this->path,0777,true);
         }
         $this->path.='/';
         $this->expirationFile=$this->path.$credential['config']['path_to_expiration_file'];
