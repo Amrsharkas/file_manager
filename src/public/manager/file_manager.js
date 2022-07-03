@@ -151,11 +151,11 @@ function buildTree() {
         data.instance.set_icon(data.node, "demo-pli-folder icon-lg icon-xs");
     }).on('changed.jstree', function (e, data) {
         getDirectory(data.node.data)
-        $('#jstree').jstree(true).delete_node(data.node.children)
-        let children=getJsonForTree();
-        children.map(function (item) {
-            $('#jstree').jstree().create_node(data.node.id, item);
-        });
+       // $('#jstree').jstree(true).delete_node(data.node.children)
+     //   let children=getJsonForTree();
+     //   children.map(function (item) {
+     //       $('#jstree').jstree().create_node(data.node.id, item);
+      //  });
         if (!data.node.state.opened){
             $('#jstree').jstree().toggle_node(data.node)
         }

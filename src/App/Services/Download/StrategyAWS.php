@@ -10,12 +10,6 @@ class StrategyAWS extends  CommonBrodcast
 
 
     public function download($current,$paths,$archiver,$fileSystem){
-//        $key=config('filesystems.disks.s3.key');
-//        $secret=config('filesystems.disks.s3.secret');
-//        $region=config('filesystems.disks.s3.region');
-//        exec('aws configure set aws_access_key_id '.$key.' --profile default &&
-//             aws configure set aws_secret_access_key '.$secret.' --profile default &&
-//             aws configure set region '.$region.' --profile default && aws configure set output "json" --profile default');
         $path_server=public_path('temp_downloads'.DIRECTORY_SEPARATOR.$current);
         if (!is_dir($path_server)){
             mkdir($path_server,777);
