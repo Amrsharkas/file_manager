@@ -510,13 +510,15 @@ $(document).ready(function () {
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
-            }).then(function () {
+            }).then(function (flag) {
                 // swal(
                 //     'Deleted!',
                 //     'Your file has been deleted.',
                 //     'success'
                 // )
-                removeFiles(data)
+                if (flag){
+                    removeFiles(data)
+                }
             })
         }
     });
@@ -741,13 +743,15 @@ $(document).ready(function () {
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
-            }).then(function () {
+            }).then(function (flag) {
                 // swal(
                 //     'Deleted!',
                 //     'Your file has been deleted.',
                 //     'success'
                 // )
-                removeFiles(data)
+                if (flag){
+                    removeFiles(data)
+                }
             })
         }
         else{
