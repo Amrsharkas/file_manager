@@ -13,13 +13,6 @@ return [
                 'separator' => '/',
                 'disk'=>'s3',
                 'adapter' => function () {
-//    return  new \League\Flysystem\Adapter\Local('uploads');
-//                   return new \League\Flysystem\Adapter\Ftp([
-//                        'host' => '206.189.55.61',
-//                        'username' => 'projectUser',
-//                        'password' => '123456789',
-//                        'port' => 21,
-//                    ]);
                     $client = new \Aws\S3\S3Client([
                         'credentials' => [
                             'key' => env('AWS_KEY'),
@@ -53,5 +46,5 @@ return [
             ],
         ],
     ],
-    'file_permissions'=>'Ie\FileManager\App\Services\FilePermission\FilePermissionPartner',
+    'file_permissions'=>'Emam\FileManager\App\Services\FilePermission\FilePermissionPartner',
 ];

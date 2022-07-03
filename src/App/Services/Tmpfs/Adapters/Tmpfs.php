@@ -110,9 +110,9 @@ class Tmpfs implements  TmpfsInterface
 
     public function remove(string $filename,$prefix='')
     {
-       // $filename = $this->sanitizeFilename($filename);
-      //  dd(public_path());
-       // dd(public_path().'/'.$this->getPath().$filename);
+        // $filename = $this->sanitizeFilename($filename);
+        //  dd(public_path());
+        // dd(public_path().'/'.$this->getPath().$filename);
 
         unlink($prefix.$this->getPath().$filename);
     }
@@ -149,9 +149,9 @@ class Tmpfs implements  TmpfsInterface
         return mb_substr($filename, 0, 255);
     }
 
-    public function setExpirationForFile($filename,$prefix='')
+    public function setExpirationForFile($filename)
     {
-        $expiredFile=$prefix.$this->expirationFile;
+        $expiredFile=public_path($this->expirationFile);
         $inp = file_get_contents($expiredFile);
         $tempArray = json_decode($inp,1);
         $tempArray[] = ['uuid'=>$filename,'expire_at'=>date('Y-m-d H:i:s')];

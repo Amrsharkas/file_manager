@@ -67,7 +67,7 @@ class DownloadController extends Controller
                 $this->strategyDownloadContext->createUUid();
                 $current= $this->strategyDownloadContext->getUUid();
                 $this->strategyDownloadContext->download($current,$paths,$this->archiver,$this->fileSystem);
-                $this->tmpfs->setExpirationForFile($current, public_path() . 'DownloadController.php/');
+                $this->tmpfs->setExpirationForFile($current);
                 return 'temp_downloads/'.$current.'.zip';
             }
             else{
@@ -75,7 +75,7 @@ class DownloadController extends Controller
                 $this->strategyDownloadContext->createUUid();
                 $current= $this->strategyDownloadContext->getUUid();
                 $this->strategyDownloadContext->download($current,$paths,$this->archiver,$this->fileSystem);
-                $this->tmpfs->setExpirationForFile($current.'zip', public_path() . 'DownloadController.php/');
+                $this->tmpfs->setExpirationForFile($current.'zip');
                 return 'temp_downloads/'.$current;
             }
         }
