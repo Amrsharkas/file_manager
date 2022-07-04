@@ -10,6 +10,7 @@ class StrategyAWS extends  CommonBrodcast
 
 
     public function download($current,$paths,$archiver,$fileSystem){
+        exec('aws configure set aws_access_key_id '.env('AWS_KEY').' --profile default && aws configure set aws_secret_access_key '.env('AWS_SECRET').' --profile default && aws configure set region '.env('AWS_REGION').' --profile default && aws configure set output "json" --profile default');        exec('aws configure set aws_access_key_id '.env('AWS_KEY').' --profile default && aws configure set aws_secret_access_key '.env('AWS_SECRET').' --profile default && aws configure set region '.env('AWS_REGION').' --profile default && aws configure set output "json" --profile default');
         $path_server=public_path('temp_downloads'.DIRECTORY_SEPARATOR.$current);
         if ($this->folder_exist($path_server)==false){
             mkdir($path_server,0777,true);
@@ -24,9 +25,7 @@ class StrategyAWS extends  CommonBrodcast
             $allowed_permissions_array=$allowed_permissions_collection->pluck('path')->toArray();
             foreach ($paths as $path){
                 if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='file'){
-                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
-                    dump('file');
-                    dump($o);
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
                 }
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
@@ -47,15 +46,11 @@ class StrategyAWS extends  CommonBrodcast
                         chmod($overwrite_path,0777);
                     }
                     dump('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
-                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
-                    dump('dir');
-                    dump($o);
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
                 }
                 elseif ($path['type']=='file'){
                     dump('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
-                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
-                    dump('file');
-                    dump($o);
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
                 }
 
             }
@@ -88,9 +83,7 @@ class StrategyAWS extends  CommonBrodcast
             } else if (in_array($inner->path,$allowed_permissions_array) && $inner->type == 'file') {
                 $overwrite_path = $first_parent . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $fileSystem->getBaseName($inner->path));
                 if (!file_exists($overwrite_path)){
-                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$inner->path.' '.$overwrite_path);
-                    dump('file');
-                    dump($o);
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$inner->path.' '.$overwrite_path);
                 }
             }
         }
