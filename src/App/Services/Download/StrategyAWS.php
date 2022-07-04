@@ -38,7 +38,7 @@ class StrategyAWS extends  CommonBrodcast
             foreach ($paths as $path){
                 if ($path['type']=='dir'){
                     $overwrite_path=$path_server.DIRECTORY_SEPARATOR.$path['name'];
-                    if (!is_dir($path_server)){
+                    if (!is_dir($overwrite_path)){
                         mkdir($overwrite_path,0777,true);
                     }
                     exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
