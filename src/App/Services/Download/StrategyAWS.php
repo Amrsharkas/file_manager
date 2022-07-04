@@ -41,10 +41,16 @@ class StrategyAWS extends  CommonBrodcast
                     if (!is_dir($overwrite_path)){
                         mkdir($overwrite_path,0777,true);
                     }
-                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive',$o,$c);
+                    dump('dir');
+                    dump($o);
+                    dump($c);
                 }
                 elseif ($path['type']=='file'){
-                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server,$o,$c);
+                    dump('file');
+                    dump($o);
+                    dump($c);
                 }
 
             }
