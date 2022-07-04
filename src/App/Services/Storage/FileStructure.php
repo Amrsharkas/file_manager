@@ -56,7 +56,6 @@ class FileStructure
     {
         $this->config = config('service_configuration');
         $credential=$this->config['services']['App\Services\Storage\FileStructure'];
-        //$adapter = $credential['config']['adapter'];
         $this->disk=$credential['config']['disk'];
         $this->adapterInstance=$this->serAdapterInstance($this->disk);
         $this->storage = new \League\Flysystem\Filesystem($this->adapterInstance);
@@ -65,19 +64,19 @@ class FileStructure
 
     private function serAdapterInstance($disk){
         $setting=config('filesystems.disks.'.$disk);
-        if ($setting['driver']='s3'){
+        if ($setting['driver']=='s3'){
             $client = new \Aws\S3\S3Client([
                 'credentials' => [
-                    'key' => env('AWS_KEY'),
-                    'secret' => env('AWS_SECRET'),
-                    'region' => env('AWS_REGION'),
+                    'key' => $setting['key'],
+                    'secret' =>  $setting['secret'],
+                    'region' => $setting['region'],
                 ],
-                'region' => env('AWS_REGION'),
+                'region' => $setting['region'],
                 'version' => 'latest',
             ]);
-            return new \League\Flysystem\AwsS3v3\AwsS3Adapter($client, env('AWS_BUCKET'));
+            return new \League\Flysystem\AwsS3v3\AwsS3Adapter($client, $setting['bucket']);
         }
-        else if ($setting['driver']='ftp'){
+        else if ($setting['driver']=='ftp'){
             return new \League\Flysystem\Adapter\Ftp([
                 'host' => $setting['host'],
                 'username' => $setting['username'],
