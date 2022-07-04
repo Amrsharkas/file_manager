@@ -11,7 +11,7 @@ class StrategyAWS extends  CommonBrodcast
 
     public function download($current,$paths,$archiver,$fileSystem){
         $path_server=public_path('temp_downloads'.DIRECTORY_SEPARATOR.$current);
-        if (!is_dir($path_server)){
+        if ($this->folder_exist($path_server)==false){
             mkdir($path_server,0777,true);
         }
         $config=config('service_configuration');
@@ -27,7 +27,7 @@ class StrategyAWS extends  CommonBrodcast
                 }
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
-                    if (!is_dir($first_parent)) {
+                    if ($this->folder_exist($first_parent)==false) {
                         mkdir($first_parent, 0777,true);
                     }
                     $this->creatDirectoriesRecursive($allowed_permissions_collection,$allowed_permissions_array,$path,$path_server,$fileSystem,$first_parent);
@@ -38,19 +38,13 @@ class StrategyAWS extends  CommonBrodcast
             foreach ($paths as $path){
                 if ($path['type']=='dir'){
                     $overwrite_path=$path_server.DIRECTORY_SEPARATOR.$path['name'];
-                    if (!is_dir($overwrite_path)){
+                    if ($this->folder_exist($overwrite_path)==false){
                         mkdir($overwrite_path,0777,true);
                     }
-                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive',$o,$c);
-                    dump('dir');
-                    dump($o);
-                    dump($c);
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
                 }
                 elseif ($path['type']=='file'){
-                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server,$o,$c);
-                    dump('file');
-                    dump($o);
-                    dump($c);
+                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
                 }
 
             }
@@ -66,7 +60,7 @@ class StrategyAWS extends  CommonBrodcast
         foreach ($inners as $inner) {
             if (in_array($inner->path,$allowed_permissions_array) && $inner->type == 'dir') {
                 $overwrite_path = $first_parent . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $fileSystem->getBaseName($inner->path));
-                if (!is_dir($overwrite_path)) {
+                if ($this->folder_exist($overwrite_path)==false) {
                     try {
                         mkdir($overwrite_path, 0777,true);
                     } catch (\Exception $e) {
@@ -116,6 +110,23 @@ class StrategyAWS extends  CommonBrodcast
             }
         }
         $zip->close();
+    }
+
+
+    function folder_exist($folder)
+    {
+        // Get canonicalized absolute pathname
+        $path = realpath($folder);
+
+        // If it exist, check if it's a directory
+        if($path !== false AND is_dir($path))
+        {
+            // Return canonicalized absolute pathname
+            return $path;
+        }
+
+        // Path/folder does not exist
+        return false;
     }
 
 
