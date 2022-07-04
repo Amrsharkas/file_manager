@@ -10,9 +10,11 @@ class StrategyAWS extends  CommonBrodcast
 
 
     public function download($current,$paths,$archiver,$fileSystem){
+        chmod(public_path('temp_downloads'),0777);
         $path_server=public_path('temp_downloads'.DIRECTORY_SEPARATOR.$current);
         if ($this->folder_exist($path_server)==false){
             mkdir($path_server,0777,true);
+            chmod($path_server,0777);
         }
         $config=config('service_configuration');
         $filePermissions=app()->make($config['filePermissions']);;
@@ -29,6 +31,7 @@ class StrategyAWS extends  CommonBrodcast
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
                     if ($this->folder_exist($first_parent)==false) {
                         mkdir($first_parent, 0777,true);
+                        chmod($first_parent,0777);
                     }
                     $this->creatDirectoriesRecursive($allowed_permissions_collection,$allowed_permissions_array,$path,$path_server,$fileSystem,$first_parent);
                 }
@@ -40,6 +43,7 @@ class StrategyAWS extends  CommonBrodcast
                     $overwrite_path=$path_server.DIRECTORY_SEPARATOR.$path['name'];
                     if ($this->folder_exist($overwrite_path)==false){
                         mkdir($overwrite_path,0777,true);
+                        chmod($overwrite_path,0777);
                     }
                     exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
                 }
@@ -49,6 +53,7 @@ class StrategyAWS extends  CommonBrodcast
 
             }
         }
+        dd($path_server);
         $this->full_size=$this->folderSize($path_server);
         $this->compress($path_server);
     }
@@ -63,6 +68,7 @@ class StrategyAWS extends  CommonBrodcast
                 if ($this->folder_exist($overwrite_path)==false) {
                     try {
                         mkdir($overwrite_path, 0777,true);
+                        chmod($overwrite_path,0777);
                     } catch (\Exception $e) {
                         dump('error');
                     }
@@ -115,17 +121,11 @@ class StrategyAWS extends  CommonBrodcast
 
     function folder_exist($folder)
     {
-        // Get canonicalized absolute pathname
         $path = realpath($folder);
-
-        // If it exist, check if it's a directory
         if($path !== false AND is_dir($path))
         {
-            // Return canonicalized absolute pathname
             return $path;
         }
-
-        // Path/folder does not exist
         return false;
     }
 
