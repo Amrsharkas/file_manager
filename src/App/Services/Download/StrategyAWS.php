@@ -24,7 +24,9 @@ class StrategyAWS extends  CommonBrodcast
             $allowed_permissions_array=$allowed_permissions_collection->pluck('path')->toArray();
             foreach ($paths as $path){
                 if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='file'){
-                    shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
+                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
+                    dump('file');
+                    dump($o);
                 }
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
@@ -45,11 +47,15 @@ class StrategyAWS extends  CommonBrodcast
                         chmod($overwrite_path,0777);
                     }
                     dump('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
-                    shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
+                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive');
+                    dump('dir');
+                    dump($o);
                 }
                 elseif ($path['type']=='file'){
                     dump('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
-                    shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
+                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server);
+                    dump('file');
+                    dump($o);
                 }
 
             }
@@ -82,7 +88,9 @@ class StrategyAWS extends  CommonBrodcast
             } else if (in_array($inner->path,$allowed_permissions_array) && $inner->type == 'file') {
                 $overwrite_path = $first_parent . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $fileSystem->getBaseName($inner->path));
                 if (!file_exists($overwrite_path)){
-                    shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$inner->path.' '.$overwrite_path);
+                    $o=shell_exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$inner->path.' '.$overwrite_path);
+                    dump('file');
+                    dump($o);
                 }
             }
         }
