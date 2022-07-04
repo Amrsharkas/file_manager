@@ -12,18 +12,6 @@ return [
             'config' => [
                 'separator' => '/',
                 'disk'=>'s3',
-                'adapter' => function () {
-                    $client = new \Aws\S3\S3Client([
-                        'credentials' => [
-                            'key' => env('AWS_KEY'),
-                            'secret' => env('AWS_SECRET'),
-                            'region' => env('AWS_REGION'),
-                        ],
-                        'region' => env('AWS_REGION'),
-                        'version' => 'latest',
-                    ]);
-                    return new \League\Flysystem\AwsS3v3\AwsS3Adapter($client, env('AWS_BUCKET'));
-                },
             ],
         ],
 
