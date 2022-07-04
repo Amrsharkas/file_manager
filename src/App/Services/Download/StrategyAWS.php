@@ -10,7 +10,6 @@ class StrategyAWS extends  CommonBrodcast
 
 
     public function download($current,$paths,$archiver,$fileSystem){
-        chmod(public_path('temp_downloads'),0777);
         $path_server=public_path('temp_downloads'.DIRECTORY_SEPARATOR.$current);
         if ($this->folder_exist($path_server)==false){
             mkdir($path_server,0777,true);
