@@ -35,7 +35,7 @@ class StrategyAWS extends  CommonBrodcast
             $allowed_permissions_array=$allowed_permissions_collection->pluck('path')->toArray();
             foreach ($paths as $path){
                 if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='file'){
-                    $this->downlodFile($path['path'],$path_server);
+                    $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
 //                    exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server.' --profile default');
                 }
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
@@ -60,7 +60,7 @@ class StrategyAWS extends  CommonBrodcast
                     // exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive'.' --profile default');
                 }
                 elseif ($path['type']=='file'){
-                    $this->downlodFile($path['path'],$path_server);
+                    $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
                     //  exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server.' --profile default');
                 }
 
@@ -78,10 +78,10 @@ class StrategyAWS extends  CommonBrodcast
     }
 
     private function downlodFile($source,$destination){
-        $res= $this->s3Client->getObject(array(
-            'Bucket' => 'sprint-erp-test',
-            'Key' => $path['fullPath'],
-            'SaveAs' => $dest.'/'.$path['name']
+        $this->s3Client->getObject(array(
+            'Bucket' => env('AWS_BUCKET'),
+            'Key' => $source,
+            'SaveAs' => $destination
         ));
     }
 
@@ -156,7 +156,6 @@ class StrategyAWS extends  CommonBrodcast
 
     private function setSetting(){
         $credential=$this->config['services']['App\Services\Storage\FileStructure'];
-        $disk=$credential['config']['disk'];
-        return $disk;
+        return $credential['config']['disk'];
     }
 }
