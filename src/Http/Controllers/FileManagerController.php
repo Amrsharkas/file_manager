@@ -38,10 +38,14 @@ class FileManagerController extends Controller
             $bucket=$this->fileSystem->getBucket();
             $region=$this->fileSystem->getRegion();
             $render_all=$request->input('render_all',false);
+            $pusher=$this->fileSystem->getRealTimeSetting();
+            if (isset($pusher)){
+                $pusher=$pusher['PUSHER_APP_KEY'];
+            }
             if ($render_all){
-                return view('fm.base',compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk','region','bucket'));
+                return view('fm.base',compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk','region','bucket','pusher'));
            }
-            return $this->renderView(compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk','region','bucket'),'fm.base','fm.contents');
+            return $this->renderView(compact('contents','mainPath','breadcrumbs','directoriesPerTree','root','disk','region','bucket','pusher'),'fm.base','fm.contents');
         }
         return 'Insufficient permissions';
     }

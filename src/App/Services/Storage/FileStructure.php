@@ -53,6 +53,15 @@ class FileStructure
     private $adapterInstance;
     private $bucket;
     private $region;
+    private $realTimeSetting;
+
+    /**
+     * @param mixed $realTimeSetting
+     */
+    public function setRealTimeSetting($realTimeSetting): void
+    {
+        $this->realTimeSetting = $realTimeSetting;
+    }
 
     public function __construct()
     {
@@ -61,6 +70,7 @@ class FileStructure
         $this->disk=$credential['config']['disk'];
         $this->adapterInstance=$this->serAdapterInstance($this->disk);
         $this->storage = new \League\Flysystem\Filesystem($this->adapterInstance);
+        $this->realTimeSetting=$this->config['pusher'];
         $this->setCacheServerIfUsed($this->config['services']);
     }
 
@@ -959,6 +969,10 @@ class FileStructure
 
     public function getAdapterInstance(){
         return $this->adapterInstance;
+    }
+
+    public function getRealTimeSetting(){
+        return $this->realTimeSetting??null;;
     }
 
 }

@@ -9,11 +9,12 @@ class CommonBrodcast
         $options = array(
             'cluster' => 'eu',
         );
-
+        $config = config('service_configuration');
+        $pusher_setting=$config['pusher'];
         $pusher = new \Pusher\Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
+            $pusher_setting['PUSHER_APP_KEY'],
+            $pusher_setting['PUSHER_APP_SECRET'],
+            $pusher_setting['PUSHER_APP_ID'],
             $options
         );
         $pusher->trigger('my-channel-'.auth()->id(), 'Ie\\FileManager\\App\\Events\\DownloadingStatusEvent', $data,

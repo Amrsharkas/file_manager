@@ -35,5 +35,10 @@ return [
             ],
         ],
     ],
+    'pusher'=>[
+        'PUSHER_APP_KEY'=>env('PUSHER_APP_KEY'),
+        'PUSHER_APP_SECRET'=>env('PUSHER_APP_SECRET'),
+        'PUSHER_APP_ID'=>env('PUSHER_APP_ID'),
+    ],
     'file_permissions'=>'Emam\FileManager\App\Services\FilePermission\FilePermissionPartner',
 ];
