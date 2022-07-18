@@ -56,8 +56,8 @@ class StrategyAWS extends  CommonBrodcast
                         mkdir($overwrite_path,0777,true);
                         chmod($overwrite_path,0777);
                     }
-                    $this->downlodDirectory($path['path'],$overwrite_path);
-                    // exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive'.' --profile default');
+                //    $this->downlodDirectory($path['path'],$overwrite_path);
+                     exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive'.' --profile default');
                 }
                 elseif ($path['type']=='file'){
                   //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
