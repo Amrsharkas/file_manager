@@ -91,7 +91,7 @@
 'heic'   ,'ind' , 'indd' ,'indt',
 'svg', 'svgz'
 ]))
-                            <img hidden class="preview_img_lazy" style="width:570px" id="editor" @if($disk=='s3') src="https://{{env('AWS_BUCKET')}}.s3.{{env('AWS_REGION')}}.amazonaws.com/{{$content['path']}}" @else src="{{$content['path']}}" @endif>
+                            <img hidden class="preview_img_lazy" style="width:570px" id="editor" @if($disk=='s3') src="https://{{$disk}}.s3.{{$region}}.amazonaws.com/{{$content['path']}}" @else src="{{$content['path']}}" @endif>
                         @endif
                         <div class="media-left"><i class="@if($content['type']=='dir' || $content['type']=='back') demo-psi-folder
 @elseif($content['type']=='file')
