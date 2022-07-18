@@ -38,7 +38,7 @@ class StrategyAWS extends  CommonBrodcast
             foreach ($paths as $path){
                 if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='file'){
                   //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
-                   exec('aws s3 cp s3://'.$bucket.'/'.$path['path'].' '.$path_server.' --profile default');
+                   exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$path_server.' --profile default');
                 }
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
