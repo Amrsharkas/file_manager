@@ -51,6 +51,8 @@ class FileStructure
      */
     private $filePermissions=null;
     private $adapterInstance;
+    private $bucket;
+    private $region;
 
     public function __construct()
     {
@@ -74,6 +76,8 @@ class FileStructure
                 'region' => $setting['region'],
                 'version' => 'latest',
             ]);
+            $this->bucket=$setting['bucket'];
+            $this->region=$setting['region'];
             return new \League\Flysystem\AwsS3v3\AwsS3Adapter($client, $setting['bucket']);
         }
         else if ($setting['driver']=='ftp'){
@@ -248,8 +252,8 @@ class FileStructure
         $this->storage->createDir($this->getParent($path) . $to);
         $directorytList= $this->getOrStoreCollectionCache($path,true);
         if ($this->storage->getAdapter() instanceof  AwsS3Adapter){
-            //  dd("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->getParent($path).$this->separator.$to);
-            exec("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->getParent($path).$this->separator.$to,$output);
+            //  dd("aws s3 --recursive mv s3://".$this->$this->bucket."/$path s3://".$this->$this->bucket.$this->getParent($path).$this->separator.$to);
+            exec("aws s3 --recursive mv s3://".$this->bucket."/$path s3://".$this->bucket.$this->getParent($path).$this->separator.$to,$output);
             $this->deleteDir($path);
             if (count($output)==0){
                 $this->createDir($this->getParent($path),$to);
@@ -546,7 +550,7 @@ class FileStructure
 //            $to_remove = '';
 //            foreach ($data['paths'] as $index => $item) {
 //                $item['type'] == 'dir' ? $recursive = '--recursive' : $recursive = '';
-//                $to_remove .= "aws s3  rm " . $recursive . " s3://" . env('AWS_BUCKET') . $this->separator . $item['path'];
+//                $to_remove .= "aws s3  rm " . $recursive . " s3://" . $this->$this->bucket . $this->separator . $item['path'];
 //                if (array_key_last($data['paths']) != $index) {
 //                    $append = ' && ';
 //                    $to_remove .= $append;
@@ -652,15 +656,15 @@ class FileStructure
         //  dd($data);
         if ($this->storage->getAdapter() instanceof  AwsS3Adapter){
             $path=$data['from_path'];
-            //   dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination);
-            //   dd("aws s3 --recursive mv s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination);
-            //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination.$this->separator.$data['file_name']);
+            //   dd("aws s3 --recursive cp s3://".$this->$this->bucket."/$path s3://".$this->$this->bucket.$this->separator.$destination);
+            //   dd("aws s3 --recursive mv s3://".$this->$this->bucket."/$path s3://".$this->$this->bucket.$this->separator.$destination);
+            //  dd("aws s3 --recursive cp s3://".$this->$this->bucket."/$path s3://".$this->$this->bucket.$this->separator.$destination.$this->separator.$data['file_name']);
             $overrwite_path=$path;
-            //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$destination.$overrwite_seperator.$data['file_name']);
+            //  dd("aws s3 --recursive cp s3://".$this->$this->bucket."/$path s3://".$this->$this->bucket.$destination.$overrwite_seperator.$data['file_name']);
             //    exec('aws configure list',$o,$c);
-            //      dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$path s3://".env('AWS_BUCKET').$this->separator.$destination.$overrwite_seperator.$data['file_name']);
-            //  dd("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$overrwite_path"." s3://".env('AWS_BUCKET').$this->separator.$this->applyCorrectPath($destination).$this->separator.$data['file_name']);
-            exec("aws s3 --recursive cp s3://".env('AWS_BUCKET')."/$overrwite_path"." s3://".env('AWS_BUCKET').$this->separator.$this->applyCorrectPath($destination).$this->separator.$data['file_name']);
+            //      dd("aws s3 --recursive cp s3://".$this->$this->bucket."/$path s3://".$this->$this->bucket.$this->separator.$destination.$overrwite_seperator.$data['file_name']);
+            //  dd("aws s3 --recursive cp s3://".$this->$this->bucket."/$overrwite_path"." s3://".$this->$this->bucket.$this->separator.$this->applyCorrectPath($destination).$this->separator.$data['file_name']);
+            exec("aws s3 --recursive cp s3://".$this->bucket."/$overrwite_path"." s3://".$this->bucket.$this->separator.$this->applyCorrectPath($destination).$this->separator.$data['file_name']);
             if ($operation=='Move'){
                 $this->deleteDir($data['from_path']);
 //                Storage::disk($this->disk)->delete([$data['from_path']]);
@@ -943,6 +947,14 @@ class FileStructure
 
     public function getDisk(){
         return $this->disk;
+    }
+
+    public function getBucket(){
+        return $this->bucket??null;;
+    }
+
+    public function getRegion(){
+        return $this->region??null;
     }
 
     public function getAdapterInstance(){
