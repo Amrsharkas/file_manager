@@ -1,5 +1,5 @@
 <div id="downloader-container" class="downloader-container d-flex flex-column hidden">
-    <input hidden id="real_brodcast" value="{{env('PUSHER_APP_KEY')}}" data-channel="my-channel-{{auth()->id()}}"/>
+    <input hidden id="real_brodcast" value="{{$pusher}}" data-channel="my-channel-{{auth()->id()}}"/>
     <div class="download-header">
         <span id="download_status" class="download-stats">
 {{--            Downloading...--}}

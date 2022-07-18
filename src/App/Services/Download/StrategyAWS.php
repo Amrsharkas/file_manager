@@ -22,15 +22,15 @@ class StrategyAWS extends  CommonBrodcast
         $this->config=config('service_configuration');
         $this->bucket= $this->config['services']['App\Services\Storage\FileStructure']['config']['aws_bucket'];
         $filePermissions=app()->make($this->config['filePermissions']);;
-        $disk=$this->setSetting();
+        //$disk=$this->setSetting();
         $availablity=$filePermissions->getAvailablity();
-        $setting=config('filesystems.disks.'.$disk);
-        $sharedConfig = [
-            'profile' => 'default',
-            'region' => $setting['region'],
-            'version' => 'latest',
-        ];
-        $this->s3Client = (new Sdk($sharedConfig))->createS3();
+   //     $setting=config('filesystems.disks.'.$disk);
+//        $sharedConfig = [
+//            'profile' => 'default',
+//            'region' => $setting['region'],
+//            'version' => 'latest',
+//        ];
+      //  $this->s3Client = (new Sdk($sharedConfig))->createS3();
         if ($availablity){
             $allowed_permissions=$filePermissions->getPermissions(false);
             $allowed_permissions_collection=collect($allowed_permissions);
