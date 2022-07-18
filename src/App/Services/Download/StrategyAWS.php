@@ -10,6 +10,7 @@ class StrategyAWS extends  CommonBrodcast
     private $full_size;
     private $s3Client;
     private $config;
+    private $bucket;
 
 
     public function download($current,$paths,$archiver,$fileSystem){
@@ -19,6 +20,7 @@ class StrategyAWS extends  CommonBrodcast
             chmod($path_server,0777);
         }
         $this->config=config('service_configuration');
+        $this->bucket= $this->config['services']['App\Services\Storage\FileStructure']['config']['aws_bucket'];
         $filePermissions=app()->make($this->config['filePermissions']);;
         $disk=$this->setSetting();
         $availablity=$filePermissions->getAvailablity();
@@ -36,7 +38,7 @@ class StrategyAWS extends  CommonBrodcast
             foreach ($paths as $path){
                 if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='file'){
                   //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
-                   exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server.' --profile default');
+                   exec('aws s3 cp s3://'.$bucket.'/'.$path['path'].' '.$path_server.' --profile default');
                 }
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
@@ -57,11 +59,11 @@ class StrategyAWS extends  CommonBrodcast
                         chmod($overwrite_path,0777);
                     }
                 //    $this->downlodDirectory($path['path'],$overwrite_path);
-                     exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$overwrite_path.' --recursive'.' --profile default');
+                     exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$overwrite_path.' --recursive'.' --profile default');
                 }
                 elseif ($path['type']=='file'){
                   //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
-                      exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$path['path'].' '.$path_server.' --profile default');
+                      exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$path_server.' --profile default');
                 }
 
             }
@@ -72,14 +74,14 @@ class StrategyAWS extends  CommonBrodcast
 
     private function downlodDirectory($sourcePath,$destinationPath){
         //$dest .= '/'.$path['name'];
-        $source = 's3://'.env('AWS_BUCKET').'/'.$sourcePath;
+        $source = 's3://'.$this->bucket.'/'.$sourcePath;
         $manager = new \Aws\S3\Transfer($this->s3Client, $source, $destinationPath);
         $manager->transfer();
     }
 
     private function downlodFile($source,$destination){
         $this->s3Client->getObject(array(
-            'Bucket' => env('AWS_BUCKET'),
+            'Bucket' => $this->bucket,
             'Key' => $source,
             'SaveAs' => $destination
         ));
@@ -110,7 +112,7 @@ class StrategyAWS extends  CommonBrodcast
                 $overwrite_path = $first_parent . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $fileSystem->getBaseName($inner->path));
                 if (!file_exists($overwrite_path)){
                    // $this->downlodFile($inner->path,$overwrite_path);
-                     exec('aws s3 cp s3://'.env('AWS_BUCKET').'/'.$inner->path.' '.$overwrite_path.' --profile default');
+                     exec('aws s3 cp s3://'.$this->bucket.'/'.$inner->path.' '.$overwrite_path.' --profile default');
                 }
             }
         }

@@ -12,6 +12,7 @@ return [
             'config' => [
                 'separator' => '/',
                 'disk'=>'s3',
+                'aws_bucket'=>env('AWS_BUCKET')
             ],
         ],
 
