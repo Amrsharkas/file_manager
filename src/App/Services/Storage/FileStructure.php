@@ -577,15 +577,15 @@ class FileStructure
                 if ($item['type'] == 'file') {
                     $pathsToDeleted[] = $item['path'];
                 } elseif ($item['type'] == 'dir') {
-                    $this->deleteDir($item['path']);
+                       $this->deleteDir($item['path']);
                 } else {
                     throw new \Exception('Type must be dir or file');
                 }
                 event(new Deleted($data, $this->disk));
 //            }
             }
-            Storage::disk($this->disk)->delete($pathsToDeleted);
-            $this->cache->forgetFromCacheServer($this->getParent($item['path']).'_'.$this->getDisk());
+             Storage::disk($this->disk)->delete($pathsToDeleted);
+            $this->cache->forgetFromCacheServer($this->getParent($item['path']).'_'.$this->getDisk(),true);
             $this->rebuildCacheStructure($this->getParent($item['path']),false);
         }
         else{
@@ -858,7 +858,7 @@ class FileStructure
         $this->isCacheUsed=$cacheCredential['used'];
         if($this->isCacheUsed){
 
-            $this->cache =new CacheSystem();
+            $this->cache =new CacheSystem($this);
             $this->cacheTimeout=$cacheCredential['timeout'];
         }
     }
