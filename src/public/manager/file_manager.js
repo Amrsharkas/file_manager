@@ -71,7 +71,7 @@ function initInputFile(){
             out['path_to_upload']= $('#path_to_upload').attr('value')
             return  out
         },
-        uploadAsync: false,
+        uploadAsync: true,
         enableResumableUpload: true,
         overwriteInitial: true,
         minFileCount: 1,
@@ -97,6 +97,9 @@ function initInputFile(){
         .on("filebatchuploadcomplete", function(event, files) {
             $('.file-preview').hide();
             $('.progress').hide();
+           // getDirectory($('#path_to_upload').attr('value'),true)
+            $('#input-id').fileinput('clear');
+            $('#input-id').fileinput('reset');
         }).on('fileuploaderror', function(event, data, msg) {
         // // // console.log('File Upload Error', 'ID: ' + data.fileId + ', Thumb ID: ' + data.previewId);
     }).on("fileuploaded", function(event, previewId, index, fileId) {
@@ -113,13 +116,13 @@ function initInputFile(){
         //     });
         // }
         // // // console.log(event, previewId, index, fileId)
-        getDirectory($('#path_to_upload').attr('value'),true)});
+        getDirectory($('#path_to_upload').attr('value'),true)
+        $('.file-preview').show();
+    });
     $('.fileinput-remove').addClass('fa fa-close');
     $('.fileinput-remove').remove();
     $('.btn.btn-primary.btn-file').hide();
     $('.file-preview').hide();
-    $('#input-id').fileinput('clear');
-    $('#input-id').fileinput('reset');
 }
 
 function assignUrlToNodes() {
@@ -127,14 +130,24 @@ function assignUrlToNodes() {
         flat: true
     })).each(function(index, value) {
         var node = $("#jstree").jstree().get_node(this.id);
+        // var lvl = node.parents.length;
+        // var idx = index;
+        // console.log('node id and url');
         $('#'+this.id).find('.jstree-anchor').attr('data-custom-url',node.data)
+        // console.log(this.id);
+        // console.log(node.data);
     });
 }
 
 function refreshTreeWhenAddOrRemoveDir(path) {
+    // console.log('in refreshTreeWhenAddOrRemoveDir')
+    // console.log(path)
     $('.jstree-anchor').each(function () {
         let nested_path=$(this).attr('data-custom-url');
+        // console.log('nested_path')
+        // console.log(nested_path)
         if (nested_path==path){
+            // console.log('condition done')
             $(this).click();
             return;
         }
@@ -181,7 +194,7 @@ function buildTree() {
             },
             plugins: ["search", "themes", "types","dnd"],
         }).on('ready.jstree',function (event, data) {
-        assignUrlToNodes()
+            assignUrlToNodes()
 
     }).on('open_node.jstree', function (e, data) {
             data.instance.set_icon(data.node, "demo-pli-folder icon-lg icon-xs");
@@ -287,20 +300,20 @@ function getDirectory(path,cache=true) {
         data: data,
         async :false,
         success: function (response) {
-            if (container) {
-                $(container).html('');
-                $(container).html(response);
-                if (last_style!=undefined){
-                    $('#demo-mail-list').addClass(last_style)
+                if (container) {
+                    $(container).html('');
+                    $(container).html(response);
+                    if (last_style!=undefined){
+                        $('#demo-mail-list').addClass(last_style)
+                    }
+                    // // // console.log(window.location.pathname);
+                    history.pushState(null, null, getURL()+'?dir='+path+query_params);
                 }
-                // // // console.log(window.location.pathname);
-                history.pushState(null, null, getURL()+'?dir='+path+query_params);
-            }
-            sortList() ;
-            initInputFile();
-            if (cache==false){
-                refreshTree();
-            }
+                sortList() ;
+                initInputFile();
+                if (cache==false){
+                    refreshTree();
+                }
         },
 
     });
@@ -471,7 +484,7 @@ $(document).ready(function () {
             hideShowDownloader(1,'Renaming')
         }
         e.preventDefault();
-        // $('#close_modal').click();
+       // $('#close_modal').click();
         let data={};
         $(this).find('input').each(function(){
             let name=$(this).attr('name');
@@ -494,7 +507,7 @@ $(document).ready(function () {
                     let  res=JSON.parse(response);
                     if (res.hasOwnProperty('code') && res.code==403){
                         success=0;
-                        // $('#close_modal').click();
+                       // $('#close_modal').click();
                         swal({
                             title: "Uncompleted operation",
                             text: "you cant do this action",
@@ -562,7 +575,7 @@ $(document).ready(function () {
                     }
                 }
                 if (success==1){
-                    //  hideProgressbar();
+                  //  hideProgressbar();
                     swal(
                         'Deleted!',
                         'Your file has been deleted.',
@@ -718,9 +731,9 @@ $(document).ready(function () {
 
     function moveFile(url,data,to_path,op) {
         if (op=='Move')
-            hideShowDownloader(1,'Moving')
+        hideShowDownloader(1,'Moving')
         else if (op=='Copy')
-            hideShowDownloader(1,'Copying')
+        hideShowDownloader(1,'Copying')
         $.ajax({
             url: url,
             method: 'post',
@@ -1069,8 +1082,8 @@ $(document).ready(function () {
         if (type=='dir' || type=='back'){
             let from=$('#from_input').attr('value')
             let data = {'paths':from };
-            // let from_path=JSON.parse(from)[0].from_path;
-            // //  // console.log(from_path)
+           // let from_path=JSON.parse(from)[0].from_path;
+           // //  // console.log(from_path)
             moveFile('/post-move-file',data,$(this).attr('data-path'),'Move');
         }
         else{
