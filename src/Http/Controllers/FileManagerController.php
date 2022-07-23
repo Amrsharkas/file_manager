@@ -30,6 +30,7 @@ class FileManagerController extends Controller
         $root =$this->setRootPath($request);
         if ($root !='false'){
             $mainPath=$request->input('dir',$this->fileSystem->getRootPath());
+            $mainPath=$this->fileSystem->clearPath($mainPath);
             $cache=filter_var($request->input('cache',true), FILTER_VALIDATE_BOOLEAN);
             $breadcrumbs=$this->fileSystem->buildBreadcrumbStructure($mainPath);
             $contents = $this->fileSystem->getDirectoryStructure($mainPath,false,$cache);

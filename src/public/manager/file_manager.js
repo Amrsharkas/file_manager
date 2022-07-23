@@ -97,7 +97,7 @@ function initInputFile(){
         .on("filebatchuploadcomplete", function(event, files) {
             $('.file-preview').hide();
             $('.progress').hide();
-           // getDirectory($('#path_to_upload').attr('value'),true)
+            // getDirectory($('#path_to_upload').attr('value'),true)
             $('#input-id').fileinput('clear');
             $('#input-id').fileinput('reset');
         }).on('fileuploaderror', function(event, data, msg) {
@@ -166,7 +166,7 @@ function syncClickedDirWithTree(path) {
 }
 
 function buildTree() {
-    let jsonData = getJsonForTree();
+    let jsonData = getJsonForTree(true);
     // console.log('islamemam');
     // console.log(jsonData);
     $('#jstree')
@@ -194,7 +194,7 @@ function buildTree() {
             },
             plugins: ["search", "themes", "types","dnd"],
         }).on('ready.jstree',function (event, data) {
-            assignUrlToNodes()
+        assignUrlToNodes()
 
     }).on('open_node.jstree', function (e, data) {
             data.instance.set_icon(data.node, "demo-pli-folder icon-lg icon-xs");
@@ -251,7 +251,7 @@ function refreshTree() {
     $('#jstree').jstree(true).refresh();
 }
 
-function getJsonForTree() {
+function getJsonForTree(make_home=false) {
     let jsonData= JSON.parse($('#directoriesPerTree').attr('value'));
     let path=$('#path_to_upload').attr('value');
     jsonData=Object.values(jsonData)
@@ -262,18 +262,24 @@ function getJsonForTree() {
         delete o.filename;
         o.parent = path;
     });
-    // let tree= [
-    //     'Home',
-    //     {
-    //         'text' : 'Home',
-    //         'type' : 'dir',
-    //         'state' : {
-    //             'opened' : true,
-    //         },
-    //         'children' : jsonData
-    //     }
-    // ]
-    return  jsonData
+    let tree;
+    if (make_home==false){
+        tree=jsonData
+    }
+    else{
+        tree= [
+            {
+                'text' : 'Files',
+                'type' : 'dir',
+                'data' : path,
+                'state' : {
+                    'opened' : true,
+                },
+                'children' : jsonData
+            }
+        ]
+    }
+    return  tree
 }
 function getDirectory(path,cache=true) {
     let container='.qu_file-manager-container';
@@ -300,20 +306,20 @@ function getDirectory(path,cache=true) {
         data: data,
         async :false,
         success: function (response) {
-                if (container) {
-                    $(container).html('');
-                    $(container).html(response);
-                    if (last_style!=undefined){
-                        $('#demo-mail-list').addClass(last_style)
-                    }
-                    // // // console.log(window.location.pathname);
-                    history.pushState(null, null, getURL()+'?dir='+path+query_params);
+            if (container) {
+                $(container).html('');
+                $(container).html(response);
+                if (last_style!=undefined){
+                    $('#demo-mail-list').addClass(last_style)
                 }
-                sortList() ;
-                initInputFile();
-                if (cache==false){
-                    refreshTree();
-                }
+                // // // console.log(window.location.pathname);
+                history.pushState(null, null, getURL()+'?dir='+path+query_params);
+            }
+            sortList() ;
+            initInputFile();
+            if (cache==false){
+                refreshTree();
+            }
         },
 
     });
@@ -484,7 +490,7 @@ $(document).ready(function () {
             hideShowDownloader(1,'Renaming')
         }
         e.preventDefault();
-       // $('#close_modal').click();
+        // $('#close_modal').click();
         let data={};
         $(this).find('input').each(function(){
             let name=$(this).attr('name');
@@ -507,7 +513,7 @@ $(document).ready(function () {
                     let  res=JSON.parse(response);
                     if (res.hasOwnProperty('code') && res.code==403){
                         success=0;
-                       // $('#close_modal').click();
+                        // $('#close_modal').click();
                         swal({
                             title: "Uncompleted operation",
                             text: "you cant do this action",
@@ -575,7 +581,7 @@ $(document).ready(function () {
                     }
                 }
                 if (success==1){
-                  //  hideProgressbar();
+                    //  hideProgressbar();
                     swal(
                         'Deleted!',
                         'Your file has been deleted.',
@@ -731,9 +737,9 @@ $(document).ready(function () {
 
     function moveFile(url,data,to_path,op) {
         if (op=='Move')
-        hideShowDownloader(1,'Moving')
+            hideShowDownloader(1,'Moving')
         else if (op=='Copy')
-        hideShowDownloader(1,'Copying')
+            hideShowDownloader(1,'Copying')
         $.ajax({
             url: url,
             method: 'post',
@@ -1082,8 +1088,8 @@ $(document).ready(function () {
         if (type=='dir' || type=='back'){
             let from=$('#from_input').attr('value')
             let data = {'paths':from };
-           // let from_path=JSON.parse(from)[0].from_path;
-           // //  // console.log(from_path)
+            // let from_path=JSON.parse(from)[0].from_path;
+            // //  // console.log(from_path)
             moveFile('/post-move-file',data,$(this).attr('data-path'),'Move');
         }
         else{
