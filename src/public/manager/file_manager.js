@@ -269,7 +269,7 @@ function getJsonForTree(make_home=false) {
     else{
         tree= [
             {
-                'text' : 'Files',
+                'text' : 'Folders',
                 'type' : 'dir',
                 'data' : path,
                 'state' : {
