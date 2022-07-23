@@ -20,25 +20,25 @@ class StrategyAWS extends  CommonBrodcast
             chmod($path_server,0777);
         }
         $this->config=config('service_configuration');
-        $this->bucket= $this->config['services']['App\Services\Storage\FileStructure']['config']['aws_bucket'];
+        $this->bucket= config('filesystems')['disks'][$fileSystem->getDisk()]['bucket'];
         $filePermissions=app()->make($this->config['filePermissions']);;
         //$disk=$this->setSetting();
         $availablity=$filePermissions->getAvailablity();
-   //     $setting=config('filesystems.disks.'.$disk);
+        //     $setting=config('filesystems.disks.'.$disk);
 //        $sharedConfig = [
 //            'profile' => 'default',
 //            'region' => $setting['region'],
 //            'version' => 'latest',
 //        ];
-      //  $this->s3Client = (new Sdk($sharedConfig))->createS3();
+        //  $this->s3Client = (new Sdk($sharedConfig))->createS3();
         if ($availablity){
             $allowed_permissions=$filePermissions->getPermissions(false);
             $allowed_permissions_collection=collect($allowed_permissions);
             $allowed_permissions_array=$allowed_permissions_collection->pluck('path')->toArray();
             foreach ($paths as $path){
                 if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='file'){
-                  //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
-                   exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$path_server.' --profile default');
+                    //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
+                    exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$path_server.' --profile default');
                 }
                 else if (in_array($path['path'],$allowed_permissions_array) && $path['type']=='dir'){
                     $first_parent=$path_server.DIRECTORY_SEPARATOR.$path['name'];
@@ -58,12 +58,12 @@ class StrategyAWS extends  CommonBrodcast
                         mkdir($overwrite_path,0777,true);
                         chmod($overwrite_path,0777);
                     }
-                //    $this->downlodDirectory($path['path'],$overwrite_path);
-                     exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$overwrite_path.' --recursive'.' --profile default');
+                    //    $this->downlodDirectory($path['path'],$overwrite_path);
+                    exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$overwrite_path.' --recursive'.' --profile default');
                 }
                 elseif ($path['type']=='file'){
-                  //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
-                      exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$path_server.' --profile default');
+                    //  $this->downlodFile($path['path'],$path_server.DIRECTORY_SEPARATOR.$path['name']);
+                    exec('aws s3 cp s3://'.$this->bucket.'/'.$path['path'].' '.$path_server.' --profile default');
                 }
 
             }
@@ -111,8 +111,8 @@ class StrategyAWS extends  CommonBrodcast
             } else if (in_array($inner->path,$allowed_permissions_array) && $inner->type == 'file') {
                 $overwrite_path = $first_parent . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $fileSystem->getBaseName($inner->path));
                 if (!file_exists($overwrite_path)){
-                   // $this->downlodFile($inner->path,$overwrite_path);
-                     exec('aws s3 cp s3://'.$this->bucket.'/'.$inner->path.' '.$overwrite_path.' --profile default');
+                    // $this->downlodFile($inner->path,$overwrite_path);
+                    exec('aws s3 cp s3://'.$this->bucket.'/'.$inner->path.' '.$overwrite_path.' --profile default');
                 }
             }
         }

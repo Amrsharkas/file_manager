@@ -9,7 +9,12 @@ class NodeFactory
         $node = [];
         $node['type']=($type);
         $node['data']=$path;
-        $node['text']=($filename);
+        if ($extension && $extension!=""){
+            $node['text']=($filename.'.'.$extension);
+        }
+        else{
+            $node['text']=($filename);
+        }
         $node['children']=($children);
         $node['extension']=($extension);;
         return  $node;

@@ -18,12 +18,12 @@ class FilePermissionPartner implements IFilePermissionPartner
     protected $availablity;
 
     private $user;
-    
+
     protected $file_permissions;
 
     public function __construct()
     {
-        
+
     }
 
     public function getUserID() : ?int
@@ -38,14 +38,14 @@ class FilePermissionPartner implements IFilePermissionPartner
 
     public function setAvailablity($availablity)
     {
-         $this->availablity=$availablity;
+        $this->availablity=$availablity;
     }
 
 
 
     public function setUser($user)
     {
-         $this->user =$user;
+        $this->user =$user;
     }
 
     public function getUser()
@@ -58,47 +58,51 @@ class FilePermissionPartner implements IFilePermissionPartner
     {
         return config('service_configuration.disk');
     }
-    
+
     public function setFileManagerPermissions($file_permissions){
         $this->file_permissions=$file_permissions;
     }
 
     public function getFileManagerPermissions(){
-       return $this->file_permissions;
+        return $this->file_permissions;
     }
 
 
     public function getPermissions($path,$search_path='parent',$first=false)
     {
         $config = config('service_configuration');
-         if ($this->getAvailablity()) {
-             $this->setUser(Auth::user());
-             $user=$this->getUserID();
-             $disk=$this->getUsedDisk();
-             // you can return array that want
-             $dataMapper = new FilePermissionPartnerMapper();
-                 if ($path!=false){
-                     $result=$dataMapper->fetchPermissions([
-                         'user_id'=>$user,
-                         'disk'=>$disk,
-                         $search_path=>$path
-                     ]);
-                 }
-                 else{
-                     $result=$dataMapper->fetchPermissions([
-                         'user_id'=>$user,
-                         'disk'=>$disk,
-                         'user_id'=>$this->getUser()->id
-                     ]);
-                 }
-                 if(!$first){
-                     return $result;
-                 }
-                 else{
-                     return  $result->first();
-                 }
+        if ($this->getAvailablity()) {
+            $this->setUser(Auth::user());
+            $user=$this->getUserID();
+            $disk=$this->getUsedDisk();
+            // you can return array that want
+            $dataMapper = new FilePermissionPartnerMapper();
+            if ($path!=false){
+                $result=$dataMapper->fetchPermissions([
+                    'user_id'=>$user,
+                    'disk'=>$disk,
+                    $search_path=>$path
+                ]);
+            }
+            else{
+                $result=$dataMapper->fetchPermissions([
+                    'user_id'=>$user,
+                    'disk'=>$disk,
+//                    'user_id'=>$this->getUser()->id
+                ]);
+            }
+            if(!$first){
+                return $result;
+            }
+            else{
+                return  $result->first();
+            }
         }
         return null;
+    }
+
+    public function addCustomNameToDownload(){
+        return '';
     }
 }
 

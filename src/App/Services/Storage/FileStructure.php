@@ -466,7 +466,10 @@ class FileStructure
                     $children=$this->listFolderFiles($fileOrFolder['path']);
                 }
                 else if($fileOrFolder['type']=='file'){
-                    $extension=$fileOrFolder['extension'];
+                    $extension='';
+                    if (array_key_exists('extension',$fileOrFolder)){
+                        $extension=$fileOrFolder['extension'];
+                    }
                 }
                 $nodes[]=$factory->createNode($type, $path, $filename, $children, $extension);;
             }
@@ -577,14 +580,14 @@ class FileStructure
                 if ($item['type'] == 'file') {
                     $pathsToDeleted[] = $item['path'];
                 } elseif ($item['type'] == 'dir') {
-                       $this->deleteDir($item['path']);
+                    $this->deleteDir($item['path']);
                 } else {
                     throw new \Exception('Type must be dir or file');
                 }
                 event(new Deleted($data, $this->disk));
 //            }
             }
-             Storage::disk($this->disk)->delete($pathsToDeleted);
+            Storage::disk($this->disk)->delete($pathsToDeleted);
             $this->cache->forgetFromCacheServer($this->getParent($item['path']).'_'.$this->getDisk(),true);
             $this->rebuildCacheStructure($this->getParent($item['path']),false);
         }
@@ -900,7 +903,7 @@ class FileStructure
                     'msg' => 'file already exist'
                 ];
             }
-            $fileName = $file->getClientOriginalName() . '.' . $extension; // a unique file name
+            $fileName = $file->getClientOriginalName(); // a unique file name
             $disk = Storage::disk($this->disk);
             $path = $disk->putFileAs($path_to_upload, $file, str_replace(' ','_',$fileName));
             $disk->setVisibility($path, 'public');
