@@ -154,16 +154,16 @@ function refreshTreeWhenAddOrRemoveDir(path) {
     })
 }
 
-function syncClickedDirWithTree(path) {
-    $('.jstree-anchor').each(function () {
-        let nested_path=$(this).attr('data-custom-url');
-        if (nested_path==path ){
-            $(this).addClass('jstree-clicked')
-            $(this).click();
-            return;
-        }
-    })
-}
+// function syncClickedDirWithTree(path) {
+//     $('.jstree-anchor').each(function () {
+//         let nested_path=$(this).attr('data-custom-url');
+//         if (nested_path==path ){
+//             $(this).addClass('jstree-clicked')
+//             $(this).click();
+//             return;
+//         }
+//     })
+// }
 
 function buildTree() {
     let jsonData = getJsonForTree(true);
@@ -544,7 +544,7 @@ $(document).ready(function () {
         let path =$(this).attr('data-path')
         $('#path_to_upload').attr('value',path)
         getDirectory(path);
-        syncClickedDirWithTree(path);
+        // syncClickedDirWithTree(path);
     });
 
     $(document).on('click','.qu_rename',function () {
