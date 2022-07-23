@@ -73,7 +73,7 @@ function initInputFile(){
         },
         uploadAsync: false,
         enableResumableUpload: true,
-        overwriteInitial: false,
+        overwriteInitial: true,
         minFileCount: 1,
         showBrowse: true,
         showCaption: false,
@@ -98,7 +98,7 @@ function initInputFile(){
             $('.file-preview').hide();
             $('.progress').hide();
         }).on('fileuploaderror', function(event, data, msg) {
-        // console.log('File Upload Error', 'ID: ' + data.fileId + ', Thumb ID: ' + data.previewId);
+        // // // console.log('File Upload Error', 'ID: ' + data.fileId + ', Thumb ID: ' + data.previewId);
     }).on("fileuploaded", function(event, previewId, index, fileId) {
         // let res= JSON.parse(response);
         // if (res.hasOwnProperty('code') && res.code==403){
@@ -112,25 +112,61 @@ function initInputFile(){
         //         closeOnConfirm: false
         //     });
         // }
-        // console.log(event, previewId, index, fileId)
+        // // // console.log(event, previewId, index, fileId)
         getDirectory($('#path_to_upload').attr('value'),true)});
     $('.fileinput-remove').addClass('fa fa-close');
     $('.fileinput-remove').remove();
     $('.btn.btn-primary.btn-file').hide();
     $('.file-preview').hide();
+    $('#input-id').fileinput('clear');
+    $('#input-id').fileinput('reset');
 }
+
+function assignUrlToNodes() {
+    $($('#jstree').jstree().get_json($('#jstree'), {
+        flat: true
+    })).each(function(index, value) {
+        var node = $("#jstree").jstree().get_node(this.id);
+        $('#'+this.id).find('.jstree-anchor').attr('data-custom-url',node.data)
+    });
+}
+
+function refreshTreeWhenAddOrRemoveDir(path) {
+    $('.jstree-anchor').each(function () {
+        let nested_path=$(this).attr('data-custom-url');
+        if (nested_path==path){
+            $(this).click();
+            return;
+        }
+    })
+}
+
+function syncClickedDirWithTree(path) {
+    $('.jstree-anchor').each(function () {
+        let nested_path=$(this).attr('data-custom-url');
+        if (nested_path==path ){
+            $(this).addClass('jstree-clicked')
+            $(this).click();
+            return;
+        }
+    })
+}
+
 function buildTree() {
     let jsonData = getJsonForTree();
+    // console.log('islamemam');
+    // console.log(jsonData);
     $('#jstree')
         .jstree({
             core: {
                 "check_callback": function (operation, node, node_parent, node_position, more) {
                     // if (operation=="move_node"){
-                    // //     console.log(operation)
-                    // //     console.log(node)
-                    // //     console.log(node_parent)
-                    // //     console.log(node_position)
-                    // //     console.log(more)
+                    // //  console.log(operation)
+                    // //   console.log(node)
+                    // // console.log(node.data)
+                    // //  console.log(node_parent)
+                    // //   console.log(node_position)
+                    // //    console.log(more)
                     // }
                 },
                 data: jsonData
@@ -144,8 +180,12 @@ function buildTree() {
                 // },
             },
             plugins: ["search", "themes", "types","dnd"],
-        }).on('open_node.jstree', function (e, data) {
+        }).on('ready.jstree',function (event, data) {
+        assignUrlToNodes()
+
+    }).on('open_node.jstree', function (e, data) {
             data.instance.set_icon(data.node, "demo-pli-folder icon-lg icon-xs");
+            assignUrlToNodes();
         }
     ).on('close_node.jstree', function (e, data) {
         data.instance.set_icon(data.node, "demo-pli-folder icon-lg icon-xs");
@@ -155,20 +195,47 @@ function buildTree() {
             $('#jstree').jstree(true).delete_node(data.node.children)
             let children=getJsonForTree();
             children.map(function (item) {
+                // // console.log('is')
+                // // console.log(item)
+                // // console.log(data.node.id)
                 $('#jstree').jstree().create_node(data.node.id, item);
+                // $('#jstree').jstree().create_node(data.node, {
+                //         li_attr: { "path": "islamemam" },"text": "name" },
+                //     "last", function () { }, true);
             });
             if (!data.node.state.opened){
+                // console.log('is1')
                 $('#jstree').jstree().toggle_node(data.node)
             }
         }
+        assignUrlToNodes();
     }).on('hover_node.jstree', function (e, data) {
-        // // console.log(data.node.data)
-        // // console.log($('#from_input').attr('value'))
+        // // // // console.log(data.node.data)
+        // // // // console.log($('#from_input').attr('value'))
         // if ($('#from_input').attr('value')!=''){
         //     moveFile('/post-move-file',{'paths':$('#from_input').attr('value') },data.node.data);
         //     getDirectory($('#path_to_upload').attr('value'))
         // }
     });
+}
+
+function refreshTree() {
+    let jsonData = getJsonForTree();
+    $('#jstree')
+        .jstree({
+            core: {
+                "check_callback": function (operation, node, node_parent, node_position, more) {
+                },
+                data: jsonData
+            },
+            types: {
+                "dir": {
+                    "icon" : "demo-pli-folder icon-lg icon-xs"
+                },
+            },
+            plugins: ["search", "themes", "types","dnd"],
+        });
+    $('#jstree').jstree(true).refresh();
 }
 
 function getJsonForTree() {
@@ -220,17 +287,20 @@ function getDirectory(path,cache=true) {
         data: data,
         async :false,
         success: function (response) {
-                if (container) {
-                    $(container).html('');
-                    $(container).html(response);
-                    if (last_style!=undefined){
-                        $('#demo-mail-list').addClass(last_style)
-                    }
-                    // console.log(window.location.pathname);
-                    history.pushState(null, null, getURL()+'?dir='+path+query_params);
+            if (container) {
+                $(container).html('');
+                $(container).html(response);
+                if (last_style!=undefined){
+                    $('#demo-mail-list').addClass(last_style)
                 }
-                sortList()
+                // // // console.log(window.location.pathname);
+                history.pushState(null, null, getURL()+'?dir='+path+query_params);
+            }
+            sortList() ;
             initInputFile();
+            if (cache==false){
+                refreshTree();
+            }
         },
 
     });
@@ -284,7 +354,7 @@ $(document).ready(function () {
     });
 
     // $(document).on('change','#file_upload',function () {
-    // //     console.log("sss")
+    // // // //     console.log("sss")
     //     $('.input-group').hide();
     //     // $('.kv-file-remove').hide();
     //     // $('.kv-file-upload').hide();
@@ -327,7 +397,7 @@ $(document).ready(function () {
     // }
     function renameFile(path,old_name,type) {
         let url='/rename-file';
-        // console.log(path)
+        // // // console.log(path)
         let data={'path':path ,'old_name':old_name,'type' :type }
         $.ajax({
             url: url,
@@ -342,6 +412,7 @@ $(document).ready(function () {
     }
 
     function createNew(path,type) {
+        // $('#modal_parent').removeClass('hidden')
         let url='/create-new';
         let data={'path':path ,'type' :type }
         $.ajax({
@@ -358,9 +429,11 @@ $(document).ready(function () {
                 $('.qu_editor').html('')
                 $('.qu_editor').addClass('text-reader')
                 $('.qu_editor').removeClass('image-reader')
+                $('.qu_editor').removeClass('pdf-reader')
                 $('.qu_editor').append(response);
                 $('.modal-footer').addClass('hidden')
                 $('.ie_open_modal').click();
+                $('.file_manager_preview_modal_wrapper_style').show()
             },
         });
     }
@@ -398,19 +471,19 @@ $(document).ready(function () {
             hideShowDownloader(1,'Renaming')
         }
         e.preventDefault();
-        $('#close_modal').click();
+        // $('#close_modal').click();
         let data={};
         $(this).find('input').each(function(){
             let name=$(this).attr('name');
             let value=$(this).attr('value');
             if (name == 'newName'){
                 value=valuePerForm;
-                // console.log(name)
-                // console.log(value)
+                // // // console.log(name)
+                // // // console.log(value)
             }
             data[name] =value;
         });
-        // console.log(data)
+        // // // console.log(data)
         $.ajax({
             url: $(this).attr('action'),
             method: 'post',
@@ -421,7 +494,7 @@ $(document).ready(function () {
                     let  res=JSON.parse(response);
                     if (res.hasOwnProperty('code') && res.code==403){
                         success=0;
-                        $('#close_modal').click();
+                        // $('#close_modal').click();
                         swal({
                             title: "Uncompleted operation",
                             text: "you cant do this action",
@@ -435,18 +508,24 @@ $(document).ready(function () {
                 if (success==1){
                     let path_to_upload=$('#path_to_upload').attr('value');
                     getDirectory(path_to_upload)
+                    // console.log('before refreshTreeWhenAddOrRemoveDir')
+                    refreshTreeWhenAddOrRemoveDir(path_to_upload)
+                    hideShowDownloader(0)
                 }
-                hideShowDownloader(0)
             },
         });
+        $('#custom_close_modal').click();
+        // $('#modal_parent').addClass('hidden')
+        // $('.modal-backdrop').remove();
     });
 
 
     $(document).on('click','.qu_folder',function () {
-        // console.log("sssss")
+        // // // console.log("sssss")
         let path =$(this).attr('data-path')
         $('#path_to_upload').attr('value',path)
         getDirectory(path);
+        syncClickedDirWithTree(path);
     });
 
     $(document).on('click','.qu_rename',function () {
@@ -471,7 +550,7 @@ $(document).ready(function () {
                     let  res=JSON.parse(response);
                     if (res.hasOwnProperty('code') && res.code==403){
                         success=0;
-                        $('#close_modal').click();
+                        // $('#close_modal').click();
                         swal({
                             title: "Uncompleted operation",
                             text: "you cant do this action",
@@ -483,7 +562,7 @@ $(document).ready(function () {
                     }
                 }
                 if (success==1){
-                  //  hideProgressbar();
+                    //  hideProgressbar();
                     swal(
                         'Deleted!',
                         'Your file has been deleted.',
@@ -492,6 +571,7 @@ $(document).ready(function () {
                     getDirectory(path_to_upload);
                 }
                 hideShowDownloader(0)
+                refreshTreeWhenAddOrRemoveDir(path_to_upload);
             },
         });
     }
@@ -535,7 +615,7 @@ $(document).ready(function () {
         $('#past_button').attr('data-name',name);
     });
     $(document).on('click','.qu_copy',function () {
-        // console.log("Ssss")
+        // // // console.log("Ssss")
         let path =$(this).attr('data-path')
         let type =$(this).attr('data-type')
         let name =$(this).attr('data-name')
@@ -549,7 +629,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click','.qu_mapping_past_button',function () {
-        // console.log("Sss")
+        // // // console.log("Sss")
         $('#past_button').click();
     });
 
@@ -578,7 +658,7 @@ $(document).ready(function () {
 
             }
         })
-        // console.log(checkUnselect)
+        // // // console.log(checkUnselect)
         if (checkUnselect==true){
             $('.qu_check_all').removeClass('qu_check_all_removed_one')
             $('.qu_check_all').prop('checked',true)
@@ -611,7 +691,7 @@ $(document).ready(function () {
             //  showProgressbar('Moving...')
         }
         let data = {'paths':from };
-        // console.log(url,data);
+        // // // console.log(url,data);
         moveFile(url,data,$('#path_to_upload').attr('value'),operation);
     })
 
@@ -638,9 +718,9 @@ $(document).ready(function () {
 
     function moveFile(url,data,to_path,op) {
         if (op=='Move')
-        hideShowDownloader(1,'Moving')
+            hideShowDownloader(1,'Moving')
         else if (op=='Copy')
-        hideShowDownloader(1,'Copying')
+            hideShowDownloader(1,'Copying')
         $.ajax({
             url: url,
             method: 'post',
@@ -652,7 +732,7 @@ $(document).ready(function () {
                     let  res=JSON.parse(response);
                     if (res.hasOwnProperty('code') && res.code==403){
                         success=0;
-                        $('#close_modal').click();
+                        // $('#close_modal').click();
                         swal({
                             title: "Uncompleted operation",
                             text: "you cant do this action",
@@ -691,18 +771,18 @@ $(document).ready(function () {
         let path =$(this).attr('data-path')
         let name =$(this).attr('data-name')
         hideShowDownloader(1,'Downloading');
-        // console.log(type,path,name)
+        // // // console.log(type,path,name)
         downloadSingle(path,type,name)
     });
     $(document).on('click','.qu_breadcrumb',function () {
-        // console.log($(this).attr('data-path'))
+        // // // console.log($(this).attr('data-path'))
         getDirectory($(this).attr('data-path'))
     });
 
     $(document).on('click','.qu_compress_many',function () {
         let data = [];
         $('.qu_checkbox').each(function() {
-            // console.log($)
+            // // // console.log($)
             if ($(this).prop('checked')===true){
                 let path=$(this).closest('.qu_grand_parent').attr('data-path');
                 let type=$(this).closest('.qu_grand_parent').attr('data-type');
@@ -723,7 +803,7 @@ $(document).ready(function () {
     $(document).on('click','.qu_remove_many',function () {
         let data = [];
         $('.qu_checkbox').each(function() {
-            // console.log($)
+            // // // console.log($)
             if ($(this).prop('checked')===true){
                 let path=$(this).closest('.qu_grand_parent').attr('data-path');
                 let type=$(this).closest('.qu_grand_parent').attr('data-type');
@@ -732,7 +812,7 @@ $(document).ready(function () {
                 data.push(item);
             }
         })
-        // console.log(data)
+        // // // console.log(data)
         if (data.length>0){
             // showProgressbar('Removing...')
             swal({
@@ -781,11 +861,11 @@ $(document).ready(function () {
             success: function (link) {
                 //window.location.href='/get-compressed-link?uniqid='+link;
                 // hideProgressbar();
-                // // console.log(link);
+                // // // // console.log(link);
                 setTimeout(function () {
                     hideShowDownloader(0)
                 },3000)
-                // console.log(link);
+                // // // console.log(link);
                 download('archive',link,false)
             },
         });
@@ -815,7 +895,7 @@ $(document).ready(function () {
     $(document).on('click','.qu_write_file',function () {
         let contents=$('#contents').html();
         let path =$('#path_modal').val();
-        $('#close_modal').click();
+        // $('#close_modal').click();
         $.ajax({
             url: '/write-file',
             method: 'post',
@@ -823,7 +903,7 @@ $(document).ready(function () {
             success: function (response) {
                 let res= JSON.parse(response);
                 if (res.hasOwnProperty('code') && res.code==403){
-                    $('#close_modal').click();
+                    // $('#close_modal').click();
                     swal({
                         title: "Uncompleted operation",
                         text: "you cant do this action",
@@ -836,6 +916,7 @@ $(document).ready(function () {
             },
 
         });
+        $('#custom_close_modal').click();
     })
 
     $(document).on('click','.qu_file',function () {
@@ -843,7 +924,7 @@ $(document).ready(function () {
         let path = $(this).attr('data-path');
         let extension = $(this).attr('data-extension');
         let mimetype = getTypeOfExtension(extension)
-        // console.log(mimetype)
+        // // // console.log(mimetype)
         $('.modal-footer').addClass('hidden')
         $('.qu_editor').html('')
         if (mimetype == undefined) {
@@ -858,7 +939,7 @@ $(document).ready(function () {
                         response = JSON.parse(response);
                     }
                     catch (e) {
-                        $('#close_modal').click();
+                        // $('#close_modal').click();
                         swal({
                             title: "Unsupported file type",
                             text: "file cannot be previewed",
@@ -935,12 +1016,12 @@ $(document).ready(function () {
                             '                    </video>`);
                         plyr.setup("#plyr-video");
                     } else if (mimetype == 'docs') {
-                        // console.log(download_url);
+                        // // // console.log(download_url);
                         $('#qu_title').html('Preview  PDF')
                         $('.qu_editor').addClass("pdf-reader")
                         $('.qu_editor').removeClass("image-reader")
                         $('.qu_editor').removeClass("text-reader")
-                        $('.qu_editor').append(`<iframe width="100%"  allowfullscreen src="${download_url}">
+                        $('.qu_editor').append(`<iframe width="500px"  height="400px" allowfullscreen src="${download_url}">
                     </iframe>`);
                         // plyr.setup("#plyr-video");
                     }
@@ -954,7 +1035,7 @@ $(document).ready(function () {
         const dockerCompose = editable.innerText;
         editable.innerHTML = '<code id="yaml" class="language-yaml"></code>';
         const yaml = document.getElementById("yaml");
-        // console.log(dockerCompose, Prism.languages.yaml);
+        // // // console.log(dockerCompose, Prism.languages.yaml);
         yaml.innerHTML = Prism.highlight(
             dockerCompose,
             Prism.languages.yml,
@@ -988,8 +1069,8 @@ $(document).ready(function () {
         if (type=='dir' || type=='back'){
             let from=$('#from_input').attr('value')
             let data = {'paths':from };
-           // let from_path=JSON.parse(from)[0].from_path;
-            // console.log(from_path)
+            // let from_path=JSON.parse(from)[0].from_path;
+            // //  // console.log(from_path)
             moveFile('/post-move-file',data,$(this).attr('data-path'),'Move');
         }
         else{
@@ -1001,7 +1082,15 @@ $(document).ready(function () {
 
 $(document).on('click','#close_modal',function (ev) {
     $('.qu_editor ').html('')
+    $(".qu_editor").modal("hide")
 })
+
+$(document).on('click','#custom_close_modal',function (ev) {
+    $("#exampleModalCenter").modal("hide")
+})
+
+
+
 // initInputFile();
 // buildTree()
 // sortList()
