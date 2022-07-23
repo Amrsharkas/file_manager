@@ -359,7 +359,7 @@ class FileStructure
         }
         $back= [
             'type' => 'back',
-            'path' => $this->getParent($path),
+            'path' => $this->clearPath($this->getParent($path)),
             'filename' => '..',
             'size' => null,
             'time' => null
