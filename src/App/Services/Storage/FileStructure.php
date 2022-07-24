@@ -112,7 +112,7 @@ class FileStructure
         while (! empty($this->storage->listContents($destination, true))) {
             $destination = $this->upcountName($destination);
         }
-
+        $destination=$this->removeSpeacialCharcters($destination);
         return $this->storage->createDir($destination);
     }
 
@@ -123,7 +123,7 @@ class FileStructure
         while ($this->storage->has($destination)) {
             $destination = $this->upcountName($destination);
         }
-
+        $destination=$this->removeSpeacialCharcters($destination);
         $this->storage->put($destination, '');
     }
 
@@ -245,6 +245,7 @@ class FileStructure
 
     public function renameFile(string $from, string $to)
     {
+        $to=$this->removeSpeacialCharcters($to);
 //        $from = $this->joinPaths($this->applyPathPrefix($destination), $from);
 //        $to = $this->joinPaths($this->applyPathPrefix($destination), $to);
 //
@@ -259,6 +260,7 @@ class FileStructure
 
     public function renameFolder(string $path,string $from, string $to): bool
     {
+        $to=$this->removeSpeacialCharcters($to);
         $this->storage->createDir($this->getParent($path) . $to);
         $directorytList= $this->getOrStoreCollectionCache($path,true);
         if ($this->storage->getAdapter() instanceof  AwsS3Adapter){
@@ -790,12 +792,21 @@ class FileStructure
 
     protected function upcountName($name)
     {
-        return preg_replace_callback(
-            '/(?:(?: \(([\d]+)\))?(\.[^.]+))?$/',
-            [$this, 'upcountCallback'],
-            $name,
-            1
-        );
+//        $new_name= preg_replace_callback(
+//            '/(?:(?: \(([\d]+)\))?(\.[^.]+))?$/',
+//            [$this, 'upcountCallback'],
+//            $name,
+//            1
+//        );
+        return $name.'_copy';
+    }
+
+
+    private function removeSpeacialCharcters($string){
+        $string=str_replace(' ','_',$string);
+        $string=str_replace(')','_',$string);
+        $string=str_replace('(','_',$string);
+        return $string;
     }
 
     private function applyPathPrefix(string $path): string

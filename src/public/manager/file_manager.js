@@ -154,16 +154,6 @@ function refreshTreeWhenAddOrRemoveDir(path) {
     })
 }
 
-// function syncClickedDirWithTree(path) {
-//     $('.jstree-anchor').each(function () {
-//         let nested_path=$(this).attr('data-custom-url');
-//         if (nested_path==path ){
-//             $(this).addClass('jstree-clicked')
-//             $(this).click();
-//             return;
-//         }
-//     })
-// }
 
 function buildTree() {
     let jsonData = getJsonForTree(true);
@@ -269,7 +259,7 @@ function getJsonForTree(make_home=false) {
     else{
         tree= [
             {
-                'text' : 'Folders',
+                'text' : 'Project Folders',
                 'type' : 'dir',
                 'data' : path,
                 'state' : {
@@ -544,7 +534,6 @@ $(document).ready(function () {
         let path =$(this).attr('data-path')
         $('#path_to_upload').attr('value',path)
         getDirectory(path);
-        // syncClickedDirWithTree(path);
     });
 
     $(document).on('click','.qu_rename',function () {
@@ -885,7 +874,19 @@ $(document).ready(function () {
                     hideShowDownloader(0)
                 },3000)
                 // // // console.log(link);
-                download('archive',link,false)
+                if (link!=false){
+                    download('archive',link,false)
+                }
+                else{
+                    swal({
+                        title: "Uncompleted operation",
+                        text: "Empty folder cannot be zipped",
+                        type: "danger",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-danger",
+                        closeOnConfirm: false
+                    });
+                }
             },
         });
     }

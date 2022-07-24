@@ -37,17 +37,17 @@ class DownloadController extends Controller
     /**
      * @var Tmpfs
      */
-  //  private $tmpfs;
+    //  private $tmpfs;
 
     public function __construct(FileStructure $fileSystem,
                                 StrategyDownloadContext $strategyDownloadContext,
                                 ZipArchiver $archiver,Tmpfs $tmpfs
     )
     {
-       $this->archiver=$archiver;
-       $this->fileSystem=$fileSystem;
-       $this->strategyDownloadContext=$strategyDownloadContext;
-       $this->tmpfs=$tmpfs;
+        $this->archiver=$archiver;
+        $this->fileSystem=$fileSystem;
+        $this->strategyDownloadContext=$strategyDownloadContext;
+        $this->tmpfs=$tmpfs;
 //       $this->tmpfs=$tmpfs;
     }
 
@@ -68,7 +68,10 @@ class DownloadController extends Controller
                 $current= $this->strategyDownloadContext->getUUid();
                 $this->strategyDownloadContext->download($current,$paths,$this->archiver,$this->fileSystem);
                 $this->tmpfs->setExpirationForFile($current);
-                return 'temp_downloads/'.$current.'.zip';
+                if (file_exists('temp_downloads/'.$current.'.zip')){
+                    return 'temp_downloads/'.$current.'.zip';
+                }
+                return  false;
             }
             else{
                 $this->strategyDownloadContext->setStrategy(new StrategyDefault());
@@ -76,7 +79,10 @@ class DownloadController extends Controller
                 $current= $this->strategyDownloadContext->getUUid();
                 $this->strategyDownloadContext->download($current,$paths,$this->archiver,$this->fileSystem);
                 $this->tmpfs->setExpirationForFile($current.'zip');
-                return 'temp_downloads/'.$current;
+                if (file_exists('temp_downloads/'.$current)){
+                    return 'temp_downloads/'.$current;
+                }
+                return  false;
             }
         }
     }
@@ -143,7 +149,7 @@ class DownloadController extends Controller
 //                ));
 //            }
 //        }
-     //   $this->archiver->addDirectoryFromStorage('temp_downloads/'.$current,1);
+        //   $this->archiver->addDirectoryFromStorage('temp_downloads/'.$current,1);
 
 //        $zip_file  = 'temp_downloads/'.$current.'.zip';
 //        $zip = new \ZipArchive();
@@ -192,7 +198,7 @@ class DownloadController extends Controller
 //        $zip_command=' zip  -r   '.$final_file.'.zip  '.$final_file;
 //        $command_to_remove_dir='rm -rf  '.$final_file;
 //        exec($zip_command.' && '.$command_to_remove_dir);
-     return  'temp_downloads/'.$current.'.zip';
+        //return  'temp_downloads/'.$current.'.zip';
     }
 
 
