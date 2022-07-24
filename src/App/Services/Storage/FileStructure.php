@@ -792,13 +792,13 @@ class FileStructure
 
     protected function upcountName($name)
     {
-//        $new_name= preg_replace_callback(
-//            '/(?:(?: \(([\d]+)\))?(\.[^.]+))?$/',
-//            [$this, 'upcountCallback'],
-//            $name,
-//            1
-//        );
-        return $name.'_copy';
+        $new_name= preg_replace_callback(
+            '/(?:(?: \(([\d]+)\))?(\.[^.]+))?$/',
+            [$this, 'upcountCallback'],
+            $name,
+            1
+        );
+        return $new_name;
     }
 
 
