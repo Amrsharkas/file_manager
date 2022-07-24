@@ -238,6 +238,11 @@ class FileStructure
 
         while ($this->storage->has($to)) {
             $to = $this->upcountName($to);
+            $file_path_array=explode($this->separator,$to);
+            $old_name=array_pop($file_path_array);
+            $new_name=$this->removeSpeacialCharcters($old_name);
+            array_push($file_path_array,$new_name);
+            $to=implode($this->separator,$file_path_array);
         }
 
         return $this->storage->rename($from, $to);
