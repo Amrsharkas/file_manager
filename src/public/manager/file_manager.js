@@ -1,3 +1,4 @@
+var uploading_status=false;
 function hideShowDownloader(show_or_hidden,msg='',progress=false){
     if (show_or_hidden==1){
         $('#downloader-container').removeClass('hidden');
@@ -89,6 +90,7 @@ function initInputFile(){
     }).on("filebatchselected", function(event, files) {
         $("#input-id").fileinput("upload");
         $('.file-preview').show();
+        uploading_status=true;
     })
         .on("filechunkbeforesend", function(event, files) {
             path_to_upload= $('#path_to_upload').attr('value')
@@ -100,6 +102,7 @@ function initInputFile(){
             // getDirectory($('#path_to_upload').attr('value'),true)
             $('#input-id').fileinput('clear');
             $('#input-id').fileinput('reset');
+            uploading_status=false;
         }).on('fileuploaderror', function(event, data, msg) {
         // // // console.log('File Upload Error', 'ID: ' + data.fileId + ', Thumb ID: ' + data.previewId);
     }).on("fileuploaded", function(event, previewId, index, fileId) {
@@ -309,6 +312,9 @@ function getDirectory(path,cache=true) {
             initInputFile();
             if (cache==false){
                 refreshTree();
+            }
+            if(uploading_status==true){
+                $('.file-preview').show();
             }
         },
 
