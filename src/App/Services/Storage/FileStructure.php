@@ -711,6 +711,7 @@ class FileStructure
         $this->filePermissions=app()->make($this->config['filePermissions']);
         if (!$this->filePermissions->getFileManagerPermissions()  ||
             ($this->filePermissions->getFileManagerPermissions() && $this->userHasPermissionToFile(Utils::CREATE,$data['path']))){
+            $data['newName']=$this->removeSpeacialCharcters($data['newName']);
             if ($data['type']=='dir'){
                 $this->createDir($data['path'],$data['newName']);
                 event(new DirectoryCreated($data['newName'],$data['path'],$this->disk));
